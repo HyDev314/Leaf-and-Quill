@@ -34,6 +34,7 @@ dependencies:
 
 dev_dependencies:
 
+  flutter_lints: ^3.0.2
   flutter_test:
     sdk: flutter
 
@@ -49,10 +50,10 @@ flutter:
   fonts:
     - family: Nunito
       fonts:
-        - asset: fonts/Nunito/Nunito-ExtraLight.ttf
+        - asset: assets/fonts/Nunito/Nunito-ExtraLight.ttf
           weight: 200
-        - asset: fonts/Nunito/Nunito-Light.ttf
+        - asset: assets/fonts/Nunito/Nunito-Light.ttf
           weight: 400
-        - asset: fonts/Nunito/Nunito-SemiBold.ttf
+        - asset: assets/fonts/Nunito/Nunito-SemiBold.ttf
           weight: 600
 

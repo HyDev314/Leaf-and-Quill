@@ -9,6 +9,12 @@ class AppPalette {
   static const Color blackColor = Color(0xFF000000);
   static const Color whiteColor = Color(0xFFFFFFFF);
 
+  static const Color darkDrawerColor = Color(0xFF282828);
+  static const Color lightDrawerColor = Color(0xFFFFFFFF);
+
+  static const Color darkCardColor = Color(0xFF343434);
+  static const Color lightCardColor = Color(0xFFFFFFFF);
+
   static const Color searchBarColor = Color(0xFF313131);
 
   static const Color mainColor = Color(0xFF07b9da);

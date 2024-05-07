@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:leaf_and_quill_app/features/feed/pages/feed_page.dart';
+import 'package:leaf_and_quill_app/features/menu/pages/menu_page.dart';
+
 class AppConstants {
   static const String imagePath = 'assets/images/';
 
@@ -14,7 +18,19 @@ class AppConstants {
 
   static const noConnectionErrorMessage = 'Không có kết nối mạng!';
 
-  static const tabWidgets = [];
+  static const tabWidgets = [
+    FeedPage(),
+    Center(
+      child: Text('page 2'),
+    ),
+    Center(
+      child: Text('page 3'),
+    ),
+    Center(
+      child: Text('page 4'),
+    ),
+    MenuPage(),
+  ];
 
   static const String fontFamily = 'Nunito';
 
