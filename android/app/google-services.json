@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "566870330563",
+    "project_id": "leaf-and-quill-app",
+    "storage_bucket": "leaf-and-quill-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566870330563:android:9f8ced94f1bd025e1e2676",
+        "android_client_info": {
+          "package_name": "com.example.leaf_and_quill_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "566870330563-sthl3n4d47tilh9ojts7g8d5uq231qjt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.leaf_and_quill_app",
+            "certificate_hash": "7861dd9bc8bfda58ff964a11eb06550358a42620"
+          }
+        },
+        {
+          "client_id": "566870330563-4ci16qe9d1fme55t5hiiq2uqbamr50uh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4S-Kr6yvOu-ivWq-qUnsUh6AAL0ArYzQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "566870330563-4ci16qe9d1fme55t5hiiq2uqbamr50uh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "566870330563-7hloejgevaf4aq5p2tq3eoje96sjetkv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.leafAndQuillApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

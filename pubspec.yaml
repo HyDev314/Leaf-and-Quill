@@ -1,0 +1,58 @@
+name: leaf_and_quill_app
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.1 <4.0.0'
+
+dependencies:
+
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.6
+
+  #firebase_setup
+  firebase_core: ^2.28.0
+  firebase_storage: ^11.7.0
+  cloud_firestore: ^4.16.0
+  firebase_auth: ^4.19.0
+  google_sign_in: ^6.2.1
+
+  #UI
+  flutter_progress_hud: ^2.0.2
+  fpdart: ^1.1.0
+  image_picker: ^1.1.1
+  flutter_riverpod: ^2.5.1
+  routemaster: ^1.0.1
+  shared_preferences: ^2.2.3
+  any_link_preview: ^3.0.2
+  uuid: ^4.4.0
+  
+
+dev_dependencies:
+
+  flutter_test:
+    sdk: flutter
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/images/
+    - assets/fonts/
+
+  fonts:
+    - family: Nunito
+      fonts:
+        - asset: fonts/Nunito/Nunito-ExtraLight.ttf
+          weight: 200
+        - asset: fonts/Nunito/Nunito-Light.ttf
+          weight: 400
+        - asset: fonts/Nunito/Nunito-SemiBold.ttf
+          weight: 600
+
