@@ -19,7 +19,7 @@ class UserCard extends ConsumerWidget {
       child: Card(
         child: InkWell(
           borderRadius: const BorderRadius.all(Radius.circular(15)),
-          onTap: () {},
+          onTap: () => navigateToUserProfile(context, user.uid),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             child: Row(

@@ -1,17 +1,14 @@
-import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 
-import 'package:image_picker/image_picker.dart';
+Future<FilePickerResult?> pickImage() async {
+  final image = await FilePicker.platform.pickFiles(type: FileType.image);
 
-Future<File?> pickImage() async {
-  try {
-    final xFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-    );
-    if (xFile != null) {
-      return File(xFile.path);
-    }
-    return null;
-  } catch (e) {
-    return null;
-  }
+  return image;
+}
+
+Future<FilePickerResult?> pickImages() async {
+  final image = await FilePicker.platform
+      .pickFiles(allowMultiple: true, type: FileType.image);
+
+  return image;
 }

@@ -1,59 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:leaf_and_quill_app/core/common/splash.dart';
 import 'package:leaf_and_quill_app/features/auth/pages/login_page.dart';
+import 'package:leaf_and_quill_app/features/community/pages/add_mods_page.dart';
+import 'package:leaf_and_quill_app/features/community/pages/community_page.dart';
+import 'package:leaf_and_quill_app/features/community/pages/create_community_page.dart';
+import 'package:leaf_and_quill_app/features/community/pages/edit_community_page.dart';
+import 'package:leaf_and_quill_app/features/community/pages/mod_tools_page.dart';
 import 'package:leaf_and_quill_app/features/home/pages/home_page.dart';
+import 'package:leaf_and_quill_app/features/message/message_page.dart';
+import 'package:leaf_and_quill_app/features/post/pages/add_post_page.dart';
+import 'package:leaf_and_quill_app/features/post/pages/post_details_page.dart';
+import 'package:leaf_and_quill_app/features/user_profile/pages/edit_profile_page.dart';
+import 'package:leaf_and_quill_app/features/user_profile/pages/profile_page.dart';
 import 'package:routemaster/routemaster.dart';
 
 final loggedOutRoute = RouteMap(routes: {
   '/': (_) => const MaterialPage(child: LoginPage()),
 });
 
+final splashRoute = RouteMap(routes: {
+  '/': (_) => const MaterialPage(child: SplashPage()),
+});
+
 final loggedInRoute = RouteMap(
   routes: {
     '/': (_) => const MaterialPage(child: HomePage()),
-    // '/create-community': (_) =>
-    //     const MaterialPage(child: CreateCommunityScreen()),
-    // '/r/:name': (route) => MaterialPage(
-    //       child: CommunityScreen(
-    //         name: route.pathParameters['name']!,
-    //       ),
-    //     ),
-    // '/mod-tools/:name': (routeData) => MaterialPage(
-    //       child: ModToolsScreen(
-    //         name: routeData.pathParameters['name']!,
-    //       ),
-    //     ),
-    // '/edit-community/:name': (routeData) => MaterialPage(
-    //       child: EditCommunityScreen(
-    //         name: routeData.pathParameters['name']!,
-    //       ),
-    //     ),
-    // '/add-mods/:name': (routeData) => MaterialPage(
-    //       child: AddModsScreen(
-    //         name: routeData.pathParameters['name']!,
-    //       ),
-    //     ),
-    // '/u/:uid': (routeData) => MaterialPage(
-    //       child: UserProfileScreen(
-    //         uid: routeData.pathParameters['uid']!,
-    //       ),
-    //     ),
-    // '/edit-profile/:uid': (routeData) => MaterialPage(
-    //       child: EditProfileScreen(
-    //         uid: routeData.pathParameters['uid']!,
-    //       ),
-    //     ),
-    // '/add-post/:type': (routeData) => MaterialPage(
-    //       child: AddPostTypeScreen(
-    //         type: routeData.pathParameters['type']!,
-    //       ),
-    //     ),
-    // '/post/:postId/comments': (route) => MaterialPage(
-    //       child: CommentScreen(
-    //         postId: route.pathParameters['postId']!,
-    //       ),
-    //     ),
-    // '/add-post': (routeData) => const MaterialPage(
-    //       child: AddPostScreen(),
-    //     ),
+    '/create-community': (_) =>
+        const MaterialPage(child: CreateCommunityPage()),
+    '/r/:id': (route) => MaterialPage(
+            child: CommunityPage(
+          id: route.pathParameters['id']!,
+        )),
+    '/mod-tools/:id': (routeData) => MaterialPage(
+            child: ModToolsPage(
+          id: routeData.pathParameters['id']!,
+        )),
+    '/edit-community/:id/:name': (routeData) {
+      return MaterialPage(
+          child: EditCommunityPage(
+        id: routeData.pathParameters['id']!,
+        name: routeData.pathParameters['name']!,
+      ));
+    },
+    '/add-mods/:id': (routeData) => MaterialPage(
+            child: AddModsPage(
+          id: routeData.pathParameters['id']!,
+        )),
+    '/u/:uid': (routeData) => MaterialPage(
+            child: ProfilePage(
+          uid: routeData.pathParameters['uid']!,
+        )),
+    '/edit-profile/:uid': (routeData) => MaterialPage(
+            child: EditProfilePage(
+          uid: routeData.pathParameters['uid']!,
+        )),
+    '/add-post': (_) => const MaterialPage(child: AddPostPage()),
+    '/m': (_) => const MaterialPage(child: MessagePage()),
+    '/post/:postId/details': (routeData) => MaterialPage(
+            child: PostDetailsPage(
+          postId: routeData.pathParameters['postId']!,
+        )),
   },
 );

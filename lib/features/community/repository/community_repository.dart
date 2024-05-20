@@ -30,7 +30,7 @@ class CommunityRepository {
         throw 'Community with the same name already exists!';
       }
 
-      return right(_communities.doc(community.name).set(community.toMap()));
+      return right(_communities.doc(community.id).set(community.toMap()));
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
@@ -38,9 +38,9 @@ class CommunityRepository {
     }
   }
 
-  FutureVoid joinCommunity(String communityName, String userId) async {
+  FutureVoid joinCommunity(String id, String userId) async {
     try {
-      return right(_communities.doc(communityName).update({
+      return right(_communities.doc(id).update({
         'members': FieldValue.arrayUnion([userId]),
       }));
     } on FirebaseException catch (e) {
@@ -50,9 +50,9 @@ class CommunityRepository {
     }
   }
 
-  FutureVoid leaveCommunity(String communityName, String userId) async {
+  FutureVoid leaveCommunity(String id, String userId) async {
     try {
-      return right(_communities.doc(communityName).update({
+      return right(_communities.doc(id).update({
         'members': FieldValue.arrayRemove([userId]),
       }));
     } on FirebaseException catch (e) {
@@ -64,6 +64,7 @@ class CommunityRepository {
 
   Stream<List<CommunityModel>> getUserCommunities(String uid) {
     return _communities
+        .where('isDeleted', isEqualTo: false)
         .where('members', arrayContains: uid)
         .snapshots()
         .map((event) {
@@ -76,14 +77,14 @@ class CommunityRepository {
     });
   }
 
-  Stream<CommunityModel> getCommunityByName(String name) {
-    return _communities.doc(name).snapshots().map((event) =>
+  Stream<CommunityModel> getCommunityById(String id) {
+    return _communities.doc(id).snapshots().map((event) =>
         CommunityModel.fromMap(event.data() as Map<String, dynamic>));
   }
 
   FutureVoid editCommunity(CommunityModel community) async {
     try {
-      return right(_communities.doc(community.name).update(community.toMap()));
+      return right(_communities.doc(community.id).update(community.toMap()));
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
@@ -92,15 +93,18 @@ class CommunityRepository {
   }
 
   Stream<List<CommunityModel>> searchCommunity(String query) {
+    String lowerCaseQuery = query.toLowerCase();
+
     return _communities
+        .where('isDeleted', isEqualTo: false)
         .where(
-          'name',
-          isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
-          isLessThan: query.isEmpty
+          'nameLowerCase',
+          isGreaterThanOrEqualTo: lowerCaseQuery.isEmpty ? 0 : lowerCaseQuery,
+          isLessThan: lowerCaseQuery.isEmpty
               ? null
-              : query.substring(0, query.length - 1) +
+              : lowerCaseQuery.substring(0, lowerCaseQuery.length - 1) +
                   String.fromCharCode(
-                    query.codeUnitAt(query.length - 1) + 1,
+                    lowerCaseQuery.codeUnitAt(lowerCaseQuery.length - 1) + 1,
                   ),
         )
         .snapshots()
@@ -124,5 +128,22 @@ class CommunityRepository {
     } catch (e) {
       return left(Failure(e.toString()));
     }
+  }
+
+  Stream<List<CommunityModel>> getSuggestCommunityPosts() {
+    return _communities
+        .where('isDeleted', isEqualTo: false)
+        .orderBy('memberCount', descending: true)
+        .limit(5)
+        .snapshots()
+        .map(
+          (event) => event.docs
+              .map(
+                (e) => CommunityModel.fromMap(
+                  e.data() as Map<String, dynamic>,
+                ),
+              )
+              .toList(),
+        );
   }
 }

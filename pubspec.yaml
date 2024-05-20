@@ -30,6 +30,12 @@ dependencies:
   shared_preferences: ^2.2.3
   any_link_preview: ^3.0.2
   uuid: ^4.4.0
+  dotted_border: ^2.1.0
+  file_picker: ^8.0.3
+  timeago: ^3.6.1
+  pull_to_refresh: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.0
   
 
 dev_dependencies:
@@ -38,10 +44,20 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_logo.png"
+
+flutter_native_splash:
+  android: true
+  ios: true
+  color: "#FFFFFF"
+  image: "assets/images/app_logo.png"
+
+
 flutter:
-
   uses-material-design: true
-
   assets:
     - assets/
     - assets/images/

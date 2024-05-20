@@ -1,36 +1,50 @@
-import 'package:flutter/foundation.dart';
-
 class CommunityModel {
   final String id;
   final String name;
+  final String nameLowerCase;
   final String banner;
   final String avatar;
+  final String description;
   final List<String> members;
+  final int memberCount;
   final List<String> mods;
+  final bool isDeleted;
 
   CommunityModel(
       {required this.id,
       required this.name,
+      required this.nameLowerCase,
       required this.banner,
       required this.avatar,
+      required this.description,
       required this.members,
-      required this.mods});
+      required this.memberCount,
+      required this.mods,
+      required this.isDeleted});
 
   CommunityModel copyWith({
     String? id,
     String? name,
+    String? nameLowerCase,
     String? banner,
     String? avatar,
+    String? description,
     List<String>? members,
+    int? memberCount,
     List<String>? mods,
+    bool? isDeleted,
   }) {
     return CommunityModel(
       id: id ?? this.id,
       name: name ?? this.name,
+      nameLowerCase: nameLowerCase ?? this.nameLowerCase,
       banner: banner ?? this.banner,
       avatar: avatar ?? this.avatar,
+      description: description ?? this.description,
       members: members ?? this.members,
+      memberCount: memberCount ?? this.memberCount,
       mods: mods ?? this.mods,
+      isDeleted: isDeleted ?? this.isDeleted,
     );
   }
 
@@ -38,10 +52,14 @@ class CommunityModel {
     return {
       'id': id,
       'name': name,
+      'nameLowerCase': nameLowerCase,
       'banner': banner,
       'avatar': avatar,
+      'description': description,
       'members': members,
+      'memberCount': memberCount,
       'mods': mods,
+      'isDeleted': isDeleted,
     };
   }
 
@@ -49,38 +67,14 @@ class CommunityModel {
     return CommunityModel(
       id: map['id'] ?? '',
       name: map['name'] ?? '',
+      nameLowerCase: map['nameLowerCase'] ?? '',
       banner: map['banner'] ?? '',
       avatar: map['avatar'] ?? '',
+      description: map['description'] ?? '',
       members: List<String>.from(map['members']),
+      memberCount: map['memberCount']?.toInt() ?? 0,
       mods: List<String>.from(map['mods']),
+      isDeleted: map['isDeleted'] ?? false,
     );
-  }
-
-  @override
-  String toString() {
-    return 'CommunityModel(id: $id, name: $name, banner: $banner, avatar: $avatar, members: $members, mods: $mods)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is CommunityModel &&
-        other.id == id &&
-        other.name == name &&
-        other.banner == banner &&
-        other.avatar == avatar &&
-        listEquals(other.members, members) &&
-        listEquals(other.mods, mods);
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^
-        name.hashCode ^
-        banner.hashCode ^
-        avatar.hashCode ^
-        members.hashCode ^
-        mods.hashCode;
   }
 }

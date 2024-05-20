@@ -60,13 +60,17 @@ class AuthRepository {
       if (userCredential.additionalUserInfo!.isNewUser) {
         userModel = UserModel(
           name: userCredential.user!.displayName ?? 'No name',
+          nameLowerCase:
+              userCredential.user!.displayName?.toLowerCase() ?? 'No name',
           email: userCredential.user!.email ?? 'No email',
           profilePic:
               userCredential.user!.photoURL ?? AppConstants.avatarDefault,
           banner: AppConstants.bannerDefault,
+          description: '',
           uid: userCredential.user!.uid,
           isAuthenticated: true,
           friends: [],
+          groupId: [],
         );
         await _users.doc(userCredential.user!.uid).set(userModel.toMap());
       } else {

@@ -22,14 +22,14 @@ class SignInWithGoogleButton extends ConsumerWidget {
         onPressed: () => signInWithGoogle(context, ref),
         icon: Image.asset(
           AppConstants.googleLogo,
-          height: 35,
+          height: 30,
         ),
         label: Text(
           'Continue with Google',
           style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 18),
         ),
         style: ElevatedButton.styleFrom(
-            backgroundColor: AppPalette.greyColor,
+            backgroundColor: AppPalette.mainColor,
             minimumSize: const Size(double.infinity, 50),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(18),

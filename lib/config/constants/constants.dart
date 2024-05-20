@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:leaf_and_quill_app/features/feed/pages/feed_page.dart';
 import 'package:leaf_and_quill_app/features/menu/pages/menu_page.dart';
+import 'package:leaf_and_quill_app/features/notification/pages/notification_page.dart';
+import 'package:leaf_and_quill_app/features/search/pages/search_page.dart';
 
 class AppConstants {
   static const String imagePath = 'assets/images/';
@@ -18,22 +20,15 @@ class AppConstants {
 
   static const noConnectionErrorMessage = 'Không có kết nối mạng!';
 
-  static const tabWidgets = [
-    FeedPage(),
-    Center(
-      child: Text('page 2'),
-    ),
-    Center(
-      child: Text('page 3'),
-    ),
-    Center(
-      child: Text('page 4'),
-    ),
-    MenuPage(),
+  static List<Widget> tabWidgets = [
+    const FeedPage(),
+    const SearchPage(),
+    const NotificationPage(),
+    const MenuPage(),
   ];
 
   static const String fontFamily = 'Nunito';
 
-  static const String googleLogo = '${imagePath}google.png';
+  static const String googleLogo = '${imagePath}google_logo.png';
   static const String appLogo = '${imagePath}app_logo.png';
 }

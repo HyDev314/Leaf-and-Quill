@@ -14,8 +14,8 @@ class LoginPage extends ConsumerWidget {
     final isLoading = ref.watch(authControllerProvider);
 
     return SkeletonPage(
-      title: Text(''),
-      action: Padding(
+      title: const Text(''),
+      actionW: Padding(
         padding: const EdgeInsets.only(right: 30),
         child: InkWell(
           onTap: () {},
@@ -30,7 +30,7 @@ class LoginPage extends ConsumerWidget {
           ),
         ),
       ),
-      body: Column(
+      bodyW: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
@@ -49,9 +49,9 @@ class LoginPage extends ConsumerWidget {
           ),
           const SizedBox(height: 100),
           isLoading
-              ? Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: const LoaderPage(),
+              ? const Padding(
+                  padding: EdgeInsets.all(20),
+                  child: LoaderPage(),
                 )
               : const SignInWithGoogleButton(),
           Padding(
@@ -88,7 +88,6 @@ class LoginPage extends ConsumerWidget {
           ),
         ],
       ),
-      isBack: true,
     );
   }
 }

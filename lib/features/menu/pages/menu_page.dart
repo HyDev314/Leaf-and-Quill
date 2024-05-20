@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:leaf_and_quill_app/core/common/widgets/skeleton.dart';
+import 'package:leaf_and_quill_app/features/menu/delegates/search_user_delegate.dart';
 import 'package:leaf_and_quill_app/features/menu/widgets/sign_out_button.dart';
 import 'package:leaf_and_quill_app/features/menu/widgets/tool_card.dart';
 import 'package:leaf_and_quill_app/features/menu/widgets/user_card.dart';
@@ -15,10 +16,30 @@ class MenuPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentTheme = ref.watch(themeNotifierProvider);
+
     return SkeletonPage(
-      title: const Text('Mục lục'),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+      title: Text(
+        'Mục lục',
+        style: Theme.of(context).textTheme.displayLarge!.copyWith(
+              fontSize: 22,
+            ),
+      ),
+      actionW: Padding(
+        padding: const EdgeInsets.only(right: 10),
+        child: IconButton(
+          onPressed: () {
+            showSearch(context: context, delegate: SearchUserDelegate(ref));
+          },
+          icon: Icon(
+            Icons.search,
+            color: currentTheme.textTheme.displaySmall!.color,
+            size: 30,
+          ),
+        ),
+      ),
+      bodyW: Padding(
+        padding: const EdgeInsets.all(10),
         child: Column(
           children: [
             const UserCard(),
@@ -49,21 +70,22 @@ class MenuPage extends ConsumerWidget {
                 ),
               ),
             ),
-            const ToolCard(
-              name: 'Công cụ',
-              list: [
-                ExtensionItem(name: 'Dịch tiếng anh'),
-                ExtensionItem(name: 'Máy tính'),
-                ExtensionItem(name: 'Đồng hồ'),
-              ],
-            ),
-            const ToolCard(
-              name: 'Trợ giúp',
-              list: [
-                ExtensionItem(name: 'Thông Báo'),
-                ExtensionItem(name: 'Chăm sóc khách hàng'),
-              ],
-            ),
+            // const ToolCard(
+            //   name: 'Công cụ',
+            //   list: [
+            //     ExtensionItem(name: 'Dịch tiếng anh'),
+            //     ExtensionItem(name: 'Máy tính'),
+            //     ExtensionItem(name: 'Đồng hồ'),
+            //   ],
+            // ),
+            // const ToolCard(
+            //   name: 'Trợ giúp',
+            //   list: [
+            //     ExtensionItem(name: 'Thông Báo'),
+            //     ExtensionItem(name: 'Chăm sóc khách hàng'),
+            //   ],
+            // ),
+            const Spacer(),
             const SignOutButton(),
           ],
         ),

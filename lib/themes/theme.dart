@@ -22,13 +22,14 @@ class AppTheme {
     scaffoldBackgroundColor: AppPalette.lightBackgroundColor,
     appBarTheme: const AppBarTheme(
       backgroundColor: AppPalette.lightBackgroundColor,
-      surfaceTintColor: AppPalette.lightBackgroundColor,
       iconTheme: IconThemeData(
         color: AppPalette.darkBackgroundColor,
       ),
+      surfaceTintColor: AppPalette.lightBackgroundColor,
     ),
     cardTheme: CardTheme(
       color: AppPalette.lightCardColor,
+      surfaceTintColor: AppPalette.lightCardColor,
       shadowColor: AppPalette.greyColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18),
@@ -37,9 +38,27 @@ class AppTheme {
     drawerTheme: const DrawerThemeData(
       backgroundColor: AppPalette.lightDrawerColor,
     ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: AppPalette.lightCardColor,
+      selectedItemColor: AppPalette.mainColor,
+      unselectedItemColor: AppPalette.greyColor,
+      type: BottomNavigationBarType.fixed,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
+    ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: AppPalette.lightDrawerColor,
-      foregroundColor: AppPalette.darkDrawerColor,
+      backgroundColor: AppPalette.greyColor,
+      foregroundColor: AppPalette.lightDrawerColor,
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+          backgroundColor: AppPalette.lightDrawerColor,
+          foregroundColor: AppPalette.darkDrawerColor,
+          shadowColor: AppPalette.darkDrawerColor,
+          minimumSize: const Size(double.infinity, 50),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          )),
     ),
     primaryColor: AppPalette.redColor,
     inputDecorationTheme: const InputDecorationTheme(
@@ -74,13 +93,14 @@ class AppTheme {
     scaffoldBackgroundColor: AppPalette.darkBackgroundColor,
     appBarTheme: const AppBarTheme(
       backgroundColor: AppPalette.darkBackgroundColor,
-      surfaceTintColor: AppPalette.darkBackgroundColor,
       iconTheme: IconThemeData(
         color: AppPalette.lightBackgroundColor,
       ),
+      surfaceTintColor: AppPalette.darkBackgroundColor,
     ),
     cardTheme: CardTheme(
       color: AppPalette.darkCardColor,
+      surfaceTintColor: AppPalette.darkCardColor,
       shadowColor: AppPalette.greyColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18),
@@ -89,9 +109,27 @@ class AppTheme {
     drawerTheme: const DrawerThemeData(
       backgroundColor: AppPalette.darkDrawerColor,
     ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: AppPalette.darkCardColor,
+      selectedItemColor: AppPalette.mainColor,
+      unselectedItemColor: AppPalette.greyColor,
+      type: BottomNavigationBarType.fixed,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
+    ),
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      backgroundColor: AppPalette.greyColor,
       foregroundColor: AppPalette.lightDrawerColor,
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+          backgroundColor: AppPalette.darkCardColor,
+          foregroundColor: AppPalette.lightDrawerColor,
+          shadowColor: AppPalette.lightDrawerColor,
+          minimumSize: const Size(double.infinity, 50),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          )),
     ),
     primaryColor: AppPalette.redColor,
     inputDecorationTheme: const InputDecorationTheme(

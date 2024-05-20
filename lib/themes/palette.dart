@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppPalette {
   static const Color darkBackgroundColor = Color(0xFF242424);
-  static const Color lightBackgroundColor = Color(0xFFF5F5F5);
+  static const Color lightBackgroundColor = Color(0xFFF8F8F8);
 
   static const Color borderColor = Color(0xFF343343);
 
