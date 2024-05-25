@@ -25,7 +25,6 @@ class AppTheme {
       iconTheme: IconThemeData(
         color: AppPalette.darkBackgroundColor,
       ),
-      surfaceTintColor: AppPalette.lightBackgroundColor,
     ),
     cardTheme: CardTheme(
       color: AppPalette.lightCardColor,
@@ -47,8 +46,9 @@ class AppTheme {
       showUnselectedLabels: false,
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: AppPalette.greyColor,
+      backgroundColor: AppPalette.mainColor,
       foregroundColor: AppPalette.lightDrawerColor,
+      shape: CircleBorder(),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -96,7 +96,6 @@ class AppTheme {
       iconTheme: IconThemeData(
         color: AppPalette.lightBackgroundColor,
       ),
-      surfaceTintColor: AppPalette.darkBackgroundColor,
     ),
     cardTheme: CardTheme(
       color: AppPalette.darkCardColor,
@@ -118,8 +117,9 @@ class AppTheme {
       showUnselectedLabels: false,
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: AppPalette.greyColor,
+      backgroundColor: AppPalette.mainColor,
       foregroundColor: AppPalette.lightDrawerColor,
+      shape: CircleBorder(),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(

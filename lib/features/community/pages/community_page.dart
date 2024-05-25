@@ -69,7 +69,7 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
                 fit: BoxFit.cover,
               ),
               leadingW: IconButton(
-                  icon: const Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
                   onPressed: () {
                     Routemaster.of(context).history.back();
                   }),
@@ -80,12 +80,13 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
                 onRefresh: () => _onRefresh(ref, widget.id),
                 onLoading: () => _onLoading(ref, widget.id),
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 15, horizontal: 5),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -180,11 +181,14 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
                         thickness: 1,
                         height: 30,
                       ),
-                      Text('Bài viết',
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayLarge!
-                              .copyWith(fontSize: 18)),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: Text('Bài viết',
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge!
+                                .copyWith(fontSize: 18)),
+                      ),
                       const SizedBox(height: 10),
                       ListView.builder(
                         shrinkWrap: true,

@@ -19,7 +19,7 @@ class BottomNavigationBarW extends ConsumerWidget {
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 7),
       decoration: BoxDecoration(
         color: currentTheme.bottomNavigationBarTheme.backgroundColor,
         borderRadius: const BorderRadius.only(

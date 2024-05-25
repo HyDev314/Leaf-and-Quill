@@ -77,34 +77,36 @@ class _AddPostPageState extends ConsumerState<AddPostPage> {
         style: Theme.of(context).textTheme.displayLarge!.copyWith(fontSize: 22),
       ),
       leadingW: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () {
             Routemaster.of(context).history.back();
           }),
-      actionW: Padding(
-        padding: const EdgeInsets.only(right: 10),
-        child: TextButton(
-          onPressed: () {
-            setState(() {
-              _isError = titleController.text.isEmpty;
-            });
-            if (!_isError) {
-              sharePost('linh tinh');
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(18))),
-            backgroundColor: AppPalette.mainColor,
-            foregroundColor: AppPalette.whiteColor,
-            textStyle: Theme.of(context)
-                .textTheme
-                .displayLarge!
-                .copyWith(fontSize: 16),
+      actionWs: [
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: TextButton(
+            onPressed: () {
+              setState(() {
+                _isError = titleController.text.isEmpty;
+              });
+              if (!_isError) {
+                sharePost('linh tinh');
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(18))),
+              backgroundColor: AppPalette.mainColor,
+              foregroundColor: AppPalette.whiteColor,
+              textStyle: Theme.of(context)
+                  .textTheme
+                  .displayLarge!
+                  .copyWith(fontSize: 16),
+            ),
+            child: const Text('Đăng bài'),
           ),
-          child: const Text('Đăng bài'),
         ),
-      ),
+      ],
       bodyW: isLoading == []
           ? const LoaderPage()
           : SingleChildScrollView(

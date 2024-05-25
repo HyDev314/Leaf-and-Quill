@@ -25,19 +25,21 @@ class MenuPage extends ConsumerWidget {
               fontSize: 22,
             ),
       ),
-      actionW: Padding(
-        padding: const EdgeInsets.only(right: 10),
-        child: IconButton(
-          onPressed: () {
-            showSearch(context: context, delegate: SearchUserDelegate(ref));
-          },
-          icon: Icon(
-            Icons.search,
-            color: currentTheme.textTheme.displaySmall!.color,
-            size: 30,
+      actionWs: [
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: IconButton(
+            onPressed: () {
+              showSearch(context: context, delegate: SearchUserDelegate(ref));
+            },
+            icon: Icon(
+              Icons.search,
+              color: currentTheme.textTheme.displaySmall!.color,
+              size: 30,
+            ),
           ),
         ),
-      ),
+      ],
       bodyW: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
@@ -70,21 +72,21 @@ class MenuPage extends ConsumerWidget {
                 ),
               ),
             ),
-            // const ToolCard(
-            //   name: 'Công cụ',
-            //   list: [
-            //     ExtensionItem(name: 'Dịch tiếng anh'),
-            //     ExtensionItem(name: 'Máy tính'),
-            //     ExtensionItem(name: 'Đồng hồ'),
-            //   ],
-            // ),
-            // const ToolCard(
-            //   name: 'Trợ giúp',
-            //   list: [
-            //     ExtensionItem(name: 'Thông Báo'),
-            //     ExtensionItem(name: 'Chăm sóc khách hàng'),
-            //   ],
-            // ),
+            const ToolCard(
+              name: 'Công cụ',
+              list: [
+                ExtensionItem(name: 'Dịch tiếng anh'),
+                ExtensionItem(name: 'Máy tính'),
+                ExtensionItem(name: 'Đồng hồ'),
+              ],
+            ),
+            const ToolCard(
+              name: 'Trợ giúp',
+              list: [
+                ExtensionItem(name: 'Thông Báo'),
+                ExtensionItem(name: 'Chăm sóc khách hàng'),
+              ],
+            ),
             const Spacer(),
             const SignOutButton(),
           ],

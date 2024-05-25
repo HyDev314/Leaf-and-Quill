@@ -29,6 +29,6 @@ class AppConstants {
 
   static const String fontFamily = 'Nunito';
 
-  static const String googleLogo = '${imagePath}google_logo.png';
+  static const String googleLogo = '${imagePath}google_logo_2.png';
   static const String appLogo = '${imagePath}app_logo.png';
 }

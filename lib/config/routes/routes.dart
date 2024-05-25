@@ -7,7 +7,10 @@ import 'package:leaf_and_quill_app/features/community/pages/create_community_pag
 import 'package:leaf_and_quill_app/features/community/pages/edit_community_page.dart';
 import 'package:leaf_and_quill_app/features/community/pages/mod_tools_page.dart';
 import 'package:leaf_and_quill_app/features/home/pages/home_page.dart';
+import 'package:leaf_and_quill_app/features/message/chat/pages/chat_screen.dart';
+import 'package:leaf_and_quill_app/features/message/group/pages/create_group_screen.dart';
 import 'package:leaf_and_quill_app/features/message/message_page.dart';
+import 'package:leaf_and_quill_app/features/message/select_contacts/pages/select_contacts_page.dart';
 import 'package:leaf_and_quill_app/features/post/pages/add_post_page.dart';
 import 'package:leaf_and_quill_app/features/post/pages/post_details_page.dart';
 import 'package:leaf_and_quill_app/features/user_profile/pages/edit_profile_page.dart';
@@ -60,5 +63,16 @@ final loggedInRoute = RouteMap(
             child: PostDetailsPage(
           postId: routeData.pathParameters['postId']!,
         )),
+
+    //message
+    '/select-contacts': (_) => const MaterialPage(child: SelectContactsPage()),
+    '/chat/:id/:isGroupChat': (routeData) => MaterialPage(
+            child: ChatScreen(
+          id: routeData.pathParameters['id']!,
+          isGroupChat:
+              routeData.pathParameters['isGroupChat']!.toLowerCase() != 'false',
+        )),
+
+    '/create_group': (_) => const MaterialPage(child: CreateGroupScreen()),
   },
 );

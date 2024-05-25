@@ -15,21 +15,23 @@ class LoginPage extends ConsumerWidget {
 
     return SkeletonPage(
       title: const Text(''),
-      actionW: Padding(
-        padding: const EdgeInsets.only(right: 30),
-        child: InkWell(
-          onTap: () {},
-          child: Row(
-            children: [
-              Text('Tiếng Việt',
-                  style: Theme.of(context)
-                      .textTheme
-                      .displaySmall!
-                      .copyWith(fontSize: 16)),
-            ],
+      actionWs: [
+        Padding(
+          padding: const EdgeInsets.only(right: 30),
+          child: InkWell(
+            onTap: () {},
+            child: Row(
+              children: [
+                Text('Tiếng Việt',
+                    style: Theme.of(context)
+                        .textTheme
+                        .displaySmall!
+                        .copyWith(fontSize: 16)),
+              ],
+            ),
           ),
         ),
-      ),
+      ],
       bodyW: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

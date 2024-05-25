@@ -120,7 +120,7 @@ class CommunityController extends StateNotifier<bool> {
     if (profileFile != null) {
       final res = await _storageRepository.storeFile(
         path: 'communities/profile',
-        id: community.name,
+        id: community.id,
         file: profileFile,
       );
       res.fold(
@@ -132,7 +132,7 @@ class CommunityController extends StateNotifier<bool> {
     if (bannerFile != null) {
       final res = await _storageRepository.storeFile(
         path: 'communities/banner',
-        id: community.name,
+        id: community.id,
         file: bannerFile,
       );
       res.fold(

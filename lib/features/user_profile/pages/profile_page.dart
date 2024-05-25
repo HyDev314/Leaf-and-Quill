@@ -68,7 +68,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             return SkeletonPage(
               title: const SizedBox(),
               leadingW: IconButton(
-                  icon: const Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
                   onPressed: () {
                     Routemaster.of(context).history.back();
                   }),

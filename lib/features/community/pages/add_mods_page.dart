@@ -35,10 +35,6 @@ class _AddModsPageState extends ConsumerState<AddModsPage> {
     Routemaster.of(context).replace('/r/${widget.id}');
   }
 
-  void backToModTools(BuildContext context) {
-    Routemaster.of(context).replace('/mod-tools/${widget.id}');
-  }
-
   void saveMods(BuildContext context) {
     ref.read(communityControllerProvider.notifier).addMods(
           widget.id,
@@ -56,41 +52,45 @@ class _AddModsPageState extends ConsumerState<AddModsPage> {
                 fontSize: 22,
               )),
       leadingW: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () {
             Routemaster.of(context).history.back();
           }),
-      actionW: Padding(
-        padding: const EdgeInsets.only(right: 10),
-        child: IconButton(
-          onPressed: () => showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-              title: Text('Lưu thay đổi quản trị viên ?',
-                  style: Theme.of(context).textTheme.displayLarge!.copyWith(
-                        fontSize: 20,
-                      )),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Routemaster.of(context).pop(),
-                  child: Text('Thoát',
-                      style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                            fontSize: 18,
-                          )),
-                ),
-                TextButton(
-                  onPressed: () => saveMods(context),
-                  child: Text('Lưu',
-                      style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                            fontSize: 18,
-                          )),
-                ),
-              ],
+      actionWs: [
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: IconButton(
+            onPressed: () => showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                title: Text('Lưu thay đổi quản trị viên ?',
+                    style: Theme.of(context).textTheme.displayLarge!.copyWith(
+                          fontSize: 20,
+                        )),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Routemaster.of(context).pop(),
+                    child: Text('Thoát',
+                        style:
+                            Theme.of(context).textTheme.displaySmall!.copyWith(
+                                  fontSize: 18,
+                                )),
+                  ),
+                  TextButton(
+                    onPressed: () => saveMods(context),
+                    child: Text('Lưu',
+                        style:
+                            Theme.of(context).textTheme.displaySmall!.copyWith(
+                                  fontSize: 18,
+                                )),
+                  ),
+                ],
+              ),
             ),
+            icon: const Icon(Icons.done, size: 25),
           ),
-          icon: const Icon(Icons.done, size: 25),
         ),
-      ),
+      ],
       bodyW: ref.watch(getCommunityByIdProvider(widget.id)).when(
             data: (community) => ListView.builder(
               itemCount: community.members.length,

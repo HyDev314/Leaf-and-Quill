@@ -88,66 +88,70 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                   ),
             ),
             leadingW: IconButton(
-                icon: const Icon(Icons.arrow_back),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded),
                 onPressed: () {
                   Routemaster.of(context).history.back();
                 }),
-            actionW: Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: TextButton(
-                onPressed: () => showDialog<String>(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: Text('Lưu thay đổi cộng đồng ?',
-                        style:
-                            Theme.of(context).textTheme.displayLarge!.copyWith(
-                                  fontSize: 22,
-                                )),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Routemaster.of(context).pop(),
-                        child: Text('Thoát',
-                            style: Theme.of(context)
-                                .textTheme
-                                .displaySmall!
-                                .copyWith(
-                                  fontSize: 18,
-                                )),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _isError = nameController.text.isEmpty;
-                          });
-                          if (!_isError) {
-                            Routemaster.of(context).pop();
-                            save();
-                          }
-                        },
-                        child: Text('Lưu',
-                            style: Theme.of(context)
-                                .textTheme
-                                .displaySmall!
-                                .copyWith(
-                                  fontSize: 18,
-                                )),
-                      ),
-                    ],
+            actionWs: [
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: TextButton(
+                  onPressed: () => showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      title: Text('Lưu thay đổi cộng đồng ?',
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayLarge!
+                              .copyWith(
+                                fontSize: 22,
+                              )),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Routemaster.of(context).pop(),
+                          child: Text('Thoát',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(
+                                    fontSize: 18,
+                                  )),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _isError = nameController.text.isEmpty;
+                            });
+                            if (!_isError) {
+                              Routemaster.of(context).pop();
+                              save();
+                            }
+                          },
+                          child: Text('Lưu',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(
+                                    fontSize: 18,
+                                  )),
+                        ),
+                      ],
+                    ),
                   ),
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(18))),
+                    backgroundColor: AppPalette.mainColor,
+                    foregroundColor: AppPalette.whiteColor,
+                    textStyle: Theme.of(context)
+                        .textTheme
+                        .displayLarge!
+                        .copyWith(fontSize: 16),
+                  ),
+                  child: const Text('Lưu'),
                 ),
-                style: ElevatedButton.styleFrom(
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(18))),
-                  backgroundColor: AppPalette.mainColor,
-                  foregroundColor: AppPalette.whiteColor,
-                  textStyle: Theme.of(context)
-                      .textTheme
-                      .displayLarge!
-                      .copyWith(fontSize: 16),
-                ),
-                child: const Text('Lưu'),
               ),
-            ),
+            ],
             bodyW: isLoading
                 ? const LoaderPage()
                 : SingleChildScrollView(

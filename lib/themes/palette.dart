@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppPalette {
   static const Color darkBackgroundColor = Color(0xFF242424);
-  static const Color lightBackgroundColor = Color(0xFFF8F8F8);
+  static const Color lightBackgroundColor = Color(0xFFF1EEF6);
 
   static const Color borderColor = Color(0xFF343343);
 
@@ -17,7 +17,7 @@ class AppPalette {
 
   static const Color searchBarColor = Color(0xFF313131);
 
-  static const Color mainColor = Color(0xFF07b9da);
+  static const Color mainColor = Color(0xFFbb86fc);
   static const Color secondColor = Color(0xFF8D8D8D);
 
   static const Color textColor = Color(0xFF2F2D2C);

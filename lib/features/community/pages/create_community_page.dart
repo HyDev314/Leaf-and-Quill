@@ -37,9 +37,14 @@ class _CreateCommunityPageState extends ConsumerState<CreateCommunityPage> {
     final isLoading = ref.watch(communityControllerProvider);
 
     return SkeletonPage(
-      title: const Text('Tạo cộng đồng'),
+      title: Text(
+        'Tạo cộng đồng',
+        style: Theme.of(context).textTheme.displayLarge!.copyWith(
+              fontSize: 22,
+            ),
+      ),
       leadingW: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () {
             Routemaster.of(context).history.back();
           }),

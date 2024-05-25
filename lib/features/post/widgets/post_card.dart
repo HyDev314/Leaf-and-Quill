@@ -259,7 +259,13 @@ class PostCard extends ConsumerWidget {
                 (post.image != '')
                     ? Padding(
                         padding: const EdgeInsets.only(top: 15),
-                        child: Image.network(post.image),
+                        child: SizedBox(
+                            height: 250,
+                            width: double.infinity,
+                            child: Image.network(
+                              post.image,
+                              fit: BoxFit.cover,
+                            )),
                       )
                     : const SizedBox(),
                 (post.link != '' && post.image == '')

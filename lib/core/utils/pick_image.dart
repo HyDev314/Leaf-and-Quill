@@ -6,9 +6,8 @@ Future<FilePickerResult?> pickImage() async {
   return image;
 }
 
-Future<FilePickerResult?> pickImages() async {
-  final image = await FilePicker.platform
-      .pickFiles(allowMultiple: true, type: FileType.image);
+Future<FilePickerResult?> pickVideo() async {
+  final video = await FilePicker.platform.pickFiles(type: FileType.video);
 
-  return image;
+  return video;
 }

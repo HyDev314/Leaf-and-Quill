@@ -5,20 +5,22 @@ class SkeletonPage extends StatelessWidget {
       {super.key,
       required this.title,
       required this.bodyW,
-      this.actionW,
+      this.actionWs,
       this.leadingW,
       this.bottomNavigationW,
       this.drawerW,
       this.endDrawerW,
       this.floatingButtonW,
       this.backgroundImage,
-      this.bottomW});
+      this.bottomW,
+      this.bottomSheetW});
 
   final Widget title;
   final Widget bodyW;
-  final Widget? actionW;
+  final List<Widget>? actionWs;
   final Widget? leadingW;
   final Widget? bottomNavigationW;
+  final Widget? bottomSheetW;
   final Widget? drawerW;
   final Widget? endDrawerW;
   final Widget? floatingButtonW;
@@ -31,11 +33,8 @@ class SkeletonPage extends StatelessWidget {
       appBar: AppBar(
         title: title,
         flexibleSpace: backgroundImage,
-        actions: [
-          actionW ?? const SizedBox(),
-        ],
+        actions: actionWs,
         leading: leadingW,
-        toolbarHeight: 80,
         bottom: bottomW,
       ),
       drawer: drawerW,
@@ -43,6 +42,7 @@ class SkeletonPage extends StatelessWidget {
       body: bodyW,
       floatingActionButton: floatingButtonW,
       bottomNavigationBar: bottomNavigationW,
+      bottomSheet: bottomNavigationW,
     );
   }
 }

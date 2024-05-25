@@ -69,16 +69,18 @@ class _FeedPageState extends ConsumerState<FeedPage> {
         );
       }),
       drawerW: const CommunityListDrawer(),
-      actionW: Padding(
-        padding: const EdgeInsets.only(right: 10),
-        child: IconButton(
-            onPressed: () => navigateToMessage(context),
-            icon: Icon(
-              Icons.chat_bubble_outline_rounded,
-              color: currentTheme.textTheme.displaySmall!.color,
-              size: 30,
-            )),
-      ),
+      actionWs: [
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: IconButton(
+              onPressed: () => navigateToMessage(context),
+              icon: Icon(
+                Icons.chat_bubble_outline_rounded,
+                color: currentTheme.textTheme.displaySmall!.color,
+                size: 30,
+              )),
+        ),
+      ],
       bodyW: ref.watch(userCommunitiesProvider(user.uid)).when(
             data: (communities) {
               if (communities.isNotEmpty) {
@@ -99,7 +101,7 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                   onRefresh: () => _onRefresh(ref, communities),
                   onLoading: () => _onLoading(ref, communities),
                   child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
                     itemCount: posts.length,
                     itemBuilder: (BuildContext context, int index) {
                       final post = posts[index];
