@@ -32,18 +32,15 @@ class NotificationPage extends ConsumerWidget {
                       ),
                 )); // Debug log
               }
-              return SingleChildScrollView(
-                padding: const EdgeInsets.all(10),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: data.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final notification = data[index];
+              return ListView.builder(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                itemCount: data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final notification = data[index];
 
-                    return NotificationCard(notification: notification);
-                  },
-                ),
+                  return NotificationCard(notification: notification);
+                },
               );
             },
             error: (error, stackTrace) {

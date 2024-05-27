@@ -75,7 +75,7 @@ class _FeedPageState extends ConsumerState<FeedPage> {
           child: IconButton(
               onPressed: () => navigateToMessage(context),
               icon: Icon(
-                Icons.chat_bubble_outline_rounded,
+                Icons.chat_outlined,
                 color: currentTheme.textTheme.displaySmall!.color,
                 size: 30,
               )),
@@ -101,7 +101,7 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                   onRefresh: () => _onRefresh(ref, communities),
                   onLoading: () => _onLoading(ref, communities),
                   child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    padding: const EdgeInsets.only(right: 5, left: 5, top: 15),
                     itemCount: posts.length,
                     itemBuilder: (BuildContext context, int index) {
                       final post = posts[index];

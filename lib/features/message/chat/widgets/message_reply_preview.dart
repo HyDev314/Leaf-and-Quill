@@ -24,9 +24,7 @@ class MessageReplyPreview extends ConsumerWidget {
               children: [
                 Expanded(
                   child: Text(
-                    messageReply!.isMe
-                        ? 'Trả lời tin nhắn của tôi'
-                        : 'Trả lời tin nhắn của bạn',
+                    'Trả lời tin nhắn ',
                     style: Theme.of(context).textTheme.displaySmall!.copyWith(
                           fontSize: 16,
                         ),
@@ -43,7 +41,7 @@ class MessageReplyPreview extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             DisplayTextImageGIF(
-              message: messageReply.message,
+              message: messageReply!.message,
               type: messageReply.messageEnum,
               isMe: false,
             ),

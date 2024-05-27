@@ -59,7 +59,7 @@ class CommunityListDrawer extends ConsumerWidget {
                                         NetworkImage(community.avatar),
                                   ),
                                 ),
-                                title: Text('r/${community.name}',
+                                title: Text(community.name,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context)

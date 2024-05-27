@@ -133,8 +133,8 @@ class CommunityRepository {
   Stream<List<CommunityModel>> getSuggestCommunityPosts() {
     return _communities
         .where('isDeleted', isEqualTo: false)
-        .orderBy('memberCount', descending: true)
-        .limit(5)
+        .orderBy('members', descending: true)
+        .limit(3)
         .snapshots()
         .map(
           (event) => event.docs

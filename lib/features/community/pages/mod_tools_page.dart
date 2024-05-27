@@ -11,8 +11,8 @@ class ModToolsPage extends ConsumerWidget {
   final String id;
   const ModToolsPage({super.key, required this.id});
 
-  void navigateToEditCommunity(BuildContext context, String name) {
-    Routemaster.of(context).push('/edit-community/$id/$name');
+  void navigateToEditCommunity(BuildContext context) {
+    Routemaster.of(context).push('/edit-community/$id');
   }
 
   void navigateToAddMods(BuildContext context) {
@@ -62,8 +62,7 @@ class ModToolsPage extends ConsumerWidget {
                             fontSize: 20,
                           ),
                     ),
-                    onTap: () =>
-                        navigateToEditCommunity(context, community.name),
+                    onTap: () => navigateToEditCommunity(context),
                   ),
                   ListTile(
                     leading: const Icon(Icons.dangerous_outlined),

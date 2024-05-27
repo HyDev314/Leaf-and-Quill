@@ -79,7 +79,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 onRefresh: () => _onRefresh(ref, widget.uid),
                 onLoading: () => _onLoading(ref, widget.uid),
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -119,7 +119,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('u/${user.name}',
+                                  Text(user.name,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: Theme.of(context)

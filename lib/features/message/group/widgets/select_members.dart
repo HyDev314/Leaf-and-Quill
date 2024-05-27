@@ -44,7 +44,7 @@ class _SelectMembersState extends ConsumerState<SelectMembers> {
                   padding: const EdgeInsets.all(5),
                   child: ListTile(
                     title: Text(
-                      'u/${friend.name}',
+                      friend.name,
                       style: Theme.of(context).textTheme.displaySmall!.copyWith(
                             fontSize: 18,
                           ),

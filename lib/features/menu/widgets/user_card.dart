@@ -36,7 +36,7 @@ class UserCard extends ConsumerWidget {
                 const SizedBox(width: 20),
                 Expanded(
                   child: Text(
-                    'u/${user.name}',
+                    user.name,
                     style: Theme.of(context).textTheme.displayLarge!.copyWith(
                           fontSize: 18,
                         ),

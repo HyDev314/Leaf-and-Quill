@@ -4,6 +4,7 @@ import 'package:leaf_and_quill_app/core/common/error.dart';
 import 'package:leaf_and_quill_app/core/common/loader.dart';
 import 'package:leaf_and_quill_app/core/common/widgets/skeleton.dart';
 import 'package:leaf_and_quill_app/features/community/controller/community_controller.dart';
+import 'package:leaf_and_quill_app/features/user_profile/controller/user_controller.dart';
 import 'package:leaf_and_quill_app/themes/palette.dart';
 import 'package:routemaster/routemaster.dart';
 
@@ -27,6 +28,11 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         .searchCommunity(communityName);
   }
 
+  void searchUserByName(WidgetRef ref, String userName) {
+    ref.read(searchUserProvider(userName));
+  }
+
+  @override
   void dispose() {
     super.dispose();
     searchTextController.dispose();
@@ -36,7 +42,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   Widget build(BuildContext context) {
     return SkeletonPage(
       title: Text(
-        'Tìm kiếm cộng đồng',
+        'Tìm kiếm ',
         style: Theme.of(context).textTheme.displayLarge!.copyWith(
               fontSize: 22,
             ),
@@ -50,7 +56,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 borderRadius: BorderRadius.circular(18),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Row(
                   children: [
                     const SizedBox(
@@ -65,6 +71,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                         controller: searchTextController,
                         onSubmitted: (value) => setState(() {
                           searchCommunityByName(ref, value);
+                          searchUserByName(ref, value);
                         }),
                         style:
                             Theme.of(context).textTheme.displayLarge!.copyWith(
@@ -82,87 +89,75 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Container(
-                        height: 50,
-                        width: 50,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          color: AppPalette.mainColor,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(18),
-                          ),
-                        ),
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.navigate_next_rounded,
-                            size: 30,
-                            color: AppPalette.whiteColor,
-                          ),
-                          onPressed: () => setState(() {
-                            searchCommunityByName(
-                                ref, searchTextController.text);
-                          }),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
             ),
-            ref.watch(getSuggestCommunityPostsProvider).when(
-                  data: (communities) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Cộng đồng nổi bật',
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayLarge!
-                              .copyWith(
-                                fontSize: 20,
-                              ),
-                        ),
-                        const SizedBox(height: 15),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: communities.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            final community = communities[index];
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 5),
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundImage:
-                                      NetworkImage(community.avatar),
-                                ),
-                                title: Text(
-                                  'r/${community.name}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displayLarge!
-                                      .copyWith(
-                                        fontSize: 18,
+            (searchTextController.text == '')
+                ? ref.watch(getSuggestCommunityPostsProvider).when(
+                      data: (communities) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Cộng đồng nổi bật',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displayLarge!
+                                  .copyWith(
+                                    fontSize: 20,
+                                  ),
+                            ),
+                            const SizedBox(height: 15),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: communities.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final community = communities[index];
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 5),
+                                  child: Card(
+                                    child: ListTile(
+                                      leading: CircleAvatar(
+                                        backgroundImage:
+                                            NetworkImage(community.avatar),
                                       ),
-                                ),
-                                onTap: () =>
-                                    navigateToCommunity(context, community.id),
-                              ),
-                            );
-                          },
+                                      title: Text(
+                                        community.name,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .displayLarge!
+                                            .copyWith(
+                                              fontSize: 18,
+                                            ),
+                                      ),
+                                      trailing: Text(
+                                        '${community.members.length} members',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .displaySmall!
+                                            .copyWith(
+                                              fontSize: 16,
+                                            ),
+                                      ),
+                                      onTap: () => navigateToCommunity(
+                                          context, community.id),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                  error: (error, stackTrace) => ErrorPage(
-                    errorText: error.toString(),
-                  ),
-                  loading: () => const LoaderPage(),
-                ),
+                      ),
+                      error: (error, stackTrace) => ErrorPage(
+                        errorText: error.toString(),
+                      ),
+                      loading: () => const LoaderPage(),
+                    )
+                : const SizedBox(),
             ref.watch(searchCommunityProvider(searchTextController.text)).when(
                   data: (communities) {
                     if (communities.isEmpty) {
@@ -174,7 +169,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Kết quả tìm kiếm',
+                            'Cộng đồng',
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge!
@@ -191,22 +186,91 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                               final community = communities[index];
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 5),
-                                child: ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(community.avatar),
+                                child: Card(
+                                  child: ListTile(
+                                    leading: CircleAvatar(
+                                      backgroundImage:
+                                          NetworkImage(community.avatar),
+                                    ),
+                                    title: Text(
+                                      community.name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge!
+                                          .copyWith(
+                                            fontSize: 18,
+                                          ),
+                                    ),
+                                    trailing: Text(
+                                      '${community.memberCount.toString()} members',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displaySmall!
+                                          .copyWith(
+                                            fontSize: 16,
+                                          ),
+                                    ),
+                                    onTap: () => navigateToCommunity(
+                                        context, community.id),
                                   ),
-                                  title: Text(
-                                    'r/${community.name}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayLarge!
-                                        .copyWith(
-                                          fontSize: 18,
-                                        ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  error: (error, stackTrace) => ErrorPage(
+                    errorText: error.toString(),
+                  ),
+                  loading: () => const LoaderPage(),
+                ),
+            ref.watch(searchUserProvider(searchTextController.text)).when(
+                  data: (users) {
+                    if (users.isEmpty) {
+                      return const SizedBox();
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Người dùng',
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge!
+                                .copyWith(
+                                  fontSize: 20,
+                                ),
+                          ),
+                          const SizedBox(height: 15),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: users.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final user = users[index];
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 5),
+                                child: Card(
+                                  child: ListTile(
+                                    leading: CircleAvatar(
+                                      backgroundImage:
+                                          NetworkImage(user.profilePic),
+                                    ),
+                                    title: Text(
+                                      user.name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge!
+                                          .copyWith(
+                                            fontSize: 18,
+                                          ),
+                                    ),
+                                    onTap: () {},
                                   ),
-                                  onTap: () => navigateToCommunity(
-                                      context, community.id),
                                 ),
                               );
                             },

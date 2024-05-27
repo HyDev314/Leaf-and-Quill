@@ -60,7 +60,7 @@ class ContactsList extends ConsumerWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'u/${groupData.name}',
+                                        groupData.name,
                                         style: Theme.of(context)
                                             .textTheme
                                             .displayLarge!
@@ -138,7 +138,7 @@ class ContactsList extends ConsumerWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'u/${chatContactData.name}',
+                                        chatContactData.name,
                                         style: Theme.of(context)
                                             .textTheme
                                             .displayLarge!

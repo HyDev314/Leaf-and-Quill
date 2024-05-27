@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:leaf_and_quill_app/core/common/error.dart';
 import 'package:leaf_and_quill_app/core/common/loader.dart';
 import 'package:leaf_and_quill_app/features/auth/controller/auth_controller.dart';
+import 'package:leaf_and_quill_app/features/post/pages/full_screen_image_page.dart';
 import 'package:leaf_and_quill_app/models/comment_model.dart';
-import 'package:leaf_and_quill_app/themes/palette.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -14,6 +14,12 @@ class CommentCard extends ConsumerWidget {
 
   void navigateToUser(BuildContext context) {
     Routemaster.of(context).push('/u/${comment.userId}');
+  }
+
+  void fullImage(BuildContext context, String imageUrl) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return FullScreenImage(imageUrl: imageUrl);
+    }));
   }
 
   @override
@@ -47,7 +53,7 @@ class CommentCard extends ConsumerWidget {
                               context,
                             ),
                             child: Text(
-                              'u/${user.name}',
+                              user.name,
                               style: Theme.of(context)
                                   .textTheme
                                   .displayLarge!
@@ -86,23 +92,12 @@ class CommentCard extends ConsumerWidget {
               (comment.image != '')
                   ? Padding(
                       padding: const EdgeInsets.only(top: 10),
-                      child: Image.network(comment.image),
+                      child: GestureDetector(
+                          onTap: () => fullImage(context, comment.image),
+                          child: Image.network(comment.image)),
                     )
                   : const SizedBox(),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  const Spacer(),
-                  TextButton(
-                      onPressed: () {},
-                      child: Text("Trả lời",
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall!
-                              .copyWith(
-                                  fontSize: 14, color: AppPalette.greyColor))),
-                ],
-              ),
+              const SizedBox(height: 15),
             ],
           ),
         ),

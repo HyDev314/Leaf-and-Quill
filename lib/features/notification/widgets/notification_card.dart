@@ -12,6 +12,7 @@ import 'package:timeago/timeago.dart' as timeago;
 
 class NotificationCard extends ConsumerWidget {
   final NotificationModel notification;
+
   const NotificationCard({super.key, required this.notification});
 
   void navigateToPostDetails(BuildContext context, String postId) {
@@ -57,23 +58,54 @@ class NotificationCard extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 5),
                                 (comment.image != '')
-                                    ? Text(
-                                        '${user.name} đã bình luận vào một bài biết của bạn bằng 1 hình ảnh ',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .displayLarge!
-                                            .copyWith(
-                                              fontSize: 18,
+                                    ? RichText(
+                                        text: TextSpan(
+                                          text: user.name,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .displayLarge!
+                                              .copyWith(
+                                                  fontSize: 18,
+                                                  color: AppPalette.mainColor),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text:
+                                                  " đã bình luận ở một bài viết của bạn bằng một hình ảnh. ",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .displaySmall!
+                                                  .copyWith(fontSize: 18),
                                             ),
+                                          ],
+                                        ),
                                       )
-                                    : Text(
-                                        '${user.name} đã bình luận vào một bài biết của bạn với nội dung: ${comment.text} ',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .displayLarge!
-                                            .copyWith(
-                                              fontSize: 18,
+                                    : RichText(
+                                        text: TextSpan(
+                                          text: user.name,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .displayLarge!
+                                              .copyWith(
+                                                  fontSize: 18,
+                                                  color: AppPalette.mainColor),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text:
+                                                  " đã bình luận ở một bài viết của bạn với nội dung: ",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .displaySmall!
+                                                  .copyWith(fontSize: 18),
                                             ),
+                                            TextSpan(
+                                              text: ' " ${comment.text} " ',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .displayLarge!
+                                                  .copyWith(fontSize: 18),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                               ],
                             ),

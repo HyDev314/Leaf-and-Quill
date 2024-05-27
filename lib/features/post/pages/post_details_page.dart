@@ -1,6 +1,6 @@
 import 'dart:io';
+import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:leaf_and_quill_app/core/common/error.dart';
 import 'package:leaf_and_quill_app/core/common/loader.dart';
@@ -9,6 +9,7 @@ import 'package:leaf_and_quill_app/core/utils/pick_image.dart';
 import 'package:leaf_and_quill_app/features/auth/controller/auth_controller.dart';
 import 'package:leaf_and_quill_app/features/community/controller/community_controller.dart';
 import 'package:leaf_and_quill_app/features/post/controller/post_controller.dart';
+import 'package:leaf_and_quill_app/features/post/pages/full_screen_image_page.dart';
 import 'package:leaf_and_quill_app/features/post/widgets/comment_card.dart';
 import 'package:leaf_and_quill_app/models/post_model.dart';
 import 'package:leaf_and_quill_app/themes/palette.dart';
@@ -17,6 +18,7 @@ import 'package:timeago/timeago.dart' as timeago;
 
 class PostDetailsPage extends ConsumerStatefulWidget {
   final String postId;
+
   const PostDetailsPage({super.key, required this.postId});
 
   @override
@@ -59,6 +61,12 @@ class _PostDetailsPageState extends ConsumerState<PostDetailsPage> {
 
   void navigateToCommunity(BuildContext context, PostModel post) {
     Routemaster.of(context).push('/r/${post.communityId}');
+  }
+
+  void fullImage(BuildContext context, String imageUrl) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return FullScreenImage(imageUrl: imageUrl);
+    }));
   }
 
   @override
@@ -139,62 +147,65 @@ class _PostDetailsPageState extends ConsumerState<PostDetailsPage> {
                                       ),
                                     ),
                                     const SizedBox(width: 10),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () => navigateToCommunity(
-                                              context, post),
-                                          child: Text(
-                                            ('r/${community.name}'),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .displayLarge!
-                                                .copyWith(
-                                                  fontSize: 20,
-                                                ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 5),
-                                        Row(
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () =>
-                                                  navigateToUser(context, post),
-                                              child: Text(
-                                                ('u/${user.name}'),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .displayLarge!
-                                                    .copyWith(
-                                                      fontSize: 16,
-                                                    ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Text(
-                                              timeago.format(post.createdAt),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () => navigateToCommunity(
+                                                context, post),
+                                            child: Text(
+                                              community.name,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .displaySmall!
+                                                  .displayLarge!
                                                   .copyWith(
-                                                    fontSize: 14,
+                                                    fontSize: 20,
                                                   ),
                                             ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    const Spacer(),
-                                    if (post.uid == currentUser.uid)
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(
-                                          Icons.info_outline_rounded,
-                                          color: AppPalette.secondColor,
-                                        ),
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Row(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () => navigateToUser(
+                                                    context, post),
+                                                child: Text(
+                                                  user.name,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .displayLarge!
+                                                      .copyWith(
+                                                        fontSize: 16,
+                                                      ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Text(
+                                                timeago.format(post.createdAt),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .displaySmall!
+                                                    .copyWith(
+                                                      fontSize: 14,
+                                                    ),
+                                                overflow: TextOverflow.fade,
+                                                maxLines: 1,
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
+                                    ),
+                                    // if (post.uid == currentUser.uid)
+                                    //   IconButton(
+                                    //     onPressed: () {},
+                                    //     icon: const Icon(
+                                    //       Icons.info_outline_rounded,
+                                    //       color: AppPalette.secondColor,
+                                    //     ),
+                                    //   ),
                                     ref
                                         .watch(getCommunityByIdProvider(
                                             post.communityId))
@@ -204,7 +215,56 @@ class _PostDetailsPageState extends ConsumerState<PostDetailsPage> {
                                                     currentUser.uid) ||
                                                 post.uid == currentUser.uid) {
                                               return IconButton(
-                                                onPressed: () {},
+                                                onPressed: () =>
+                                                    showDialog<String>(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          AlertDialog(
+                                                    title: Text(
+                                                        'Xác nhận xóa bài viết ?',
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .displayLarge!
+                                                            .copyWith(
+                                                              fontSize: 22,
+                                                            )),
+                                                    actions: <Widget>[
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Routemaster.of(
+                                                                    context)
+                                                                .pop(),
+                                                        child: Text('Thoát',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .displaySmall!
+                                                                .copyWith(
+                                                                  fontSize: 18,
+                                                                )),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          deletePost(ref,
+                                                              context, post);
+                                                          Routemaster.of(
+                                                                  context)
+                                                              .history
+                                                              .back();
+                                                        },
+                                                        child: Text('Xác nhận',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .displaySmall!
+                                                                .copyWith(
+                                                                  fontSize: 18,
+                                                                )),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
                                                 icon: const Icon(
                                                   Icons.close_rounded,
                                                   color: AppPalette.secondColor,
@@ -240,22 +300,33 @@ class _PostDetailsPageState extends ConsumerState<PostDetailsPage> {
                     ),
                     const SizedBox(height: 10),
                     (post.description != '')
-                        ? Text(
-                            post.description,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 3,
-                            style: Theme.of(context)
-                                .textTheme
-                                .displaySmall!
-                                .copyWith(
-                                  fontSize: 16,
-                                ),
+                        ? Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Text(
+                              post.description,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 3,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(
+                                    fontSize: 16,
+                                  ),
+                            ),
                           )
                         : const SizedBox(),
                     (post.image != '')
                         ? Padding(
                             padding: const EdgeInsets.only(top: 15),
-                            child: Image.network(post.image),
+                            child: GestureDetector(
+                                onTap: () => fullImage(context, post.image),
+                                child: Image.network(post.image)),
+                          )
+                        : const SizedBox(),
+                    (post.link != '' && post.image == '')
+                        ? AnyLinkPreview(
+                            displayDirection: UIDirection.uiDirectionHorizontal,
+                            link: post.link,
                           )
                         : const SizedBox(),
                     const SizedBox(height: 10),

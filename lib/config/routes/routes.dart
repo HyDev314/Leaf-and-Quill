@@ -38,11 +38,10 @@ final loggedInRoute = RouteMap(
             child: ModToolsPage(
           id: routeData.pathParameters['id']!,
         )),
-    '/edit-community/:id/:name': (routeData) {
+    '/edit-community/:id': (routeData) {
       return MaterialPage(
           child: EditCommunityPage(
         id: routeData.pathParameters['id']!,
-        name: routeData.pathParameters['name']!,
       ));
     },
     '/add-mods/:id': (routeData) => MaterialPage(

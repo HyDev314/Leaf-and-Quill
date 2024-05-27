@@ -57,7 +57,7 @@ class SelectContactsPage extends ConsumerWidget {
                       padding: const EdgeInsets.all(5),
                       child: ListTile(
                         title: Text(
-                          'u/${friend.name}',
+                          friend.name,
                           style: Theme.of(context)
                               .textTheme
                               .displayLarge!

@@ -37,7 +37,7 @@ class ChatScreen extends ConsumerWidget {
                     const SizedBox(width: 10),
                     Flexible(
                       child: Text(
-                        'g/${group.name}',
+                        group.name,
                         overflow: TextOverflow.fade,
                         style:
                             Theme.of(context).textTheme.displayLarge!.copyWith(
@@ -64,11 +64,15 @@ class ChatScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    Text(
-                      'u/${contact.name}',
-                      style: Theme.of(context).textTheme.displayLarge!.copyWith(
-                            fontSize: 20,
-                          ),
+                    Flexible(
+                      child: Text(
+                        contact.name,
+                        overflow: TextOverflow.fade,
+                        style:
+                            Theme.of(context).textTheme.displayLarge!.copyWith(
+                                  fontSize: 20,
+                                ),
+                      ),
                     ),
                   ],
                 ),
@@ -98,6 +102,7 @@ class ChatScreen extends ConsumerWidget {
       ],
       bodyW: Column(
         children: [
+          const SizedBox(height: 10),
           Expanded(
             child: ChatList(
               receiverUserId: id,

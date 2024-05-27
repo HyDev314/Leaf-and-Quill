@@ -26,7 +26,7 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
   bool _hasFetchedInitialPosts = false;
 
   void navigateToModTools(BuildContext context) {
-    Routemaster.of(context).push('/mod-tools/$widget.id');
+    Routemaster.of(context).push('/mod-tools/${widget.id}');
   }
 
   void joinCommunity(
@@ -103,7 +103,7 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('r/${community.name}',
+                                  Text(community.name,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: Theme.of(context)
@@ -160,20 +160,25 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
                         ),
                       ),
                       (community.description != '')
-                          ? Text('Mô tả về cộng đồng',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displayLarge!
-                                  .copyWith(fontSize: 18))
-                          : const SizedBox(),
-                      (community.description != '')
                           ? Padding(
-                              padding: const EdgeInsets.only(top: 5),
-                              child: Text(community.description,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displaySmall!
-                                      .copyWith(fontSize: 16)),
+                              padding: const EdgeInsets.only(left: 10, top: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Mô tả về cộng đồng',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge!
+                                          .copyWith(fontSize: 18)),
+                                  Padding(
+                                      padding: const EdgeInsets.only(top: 5),
+                                      child: Text(community.description,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .displaySmall!
+                                              .copyWith(fontSize: 16))),
+                                ],
+                              ),
                             )
                           : const SizedBox(),
                       Divider(

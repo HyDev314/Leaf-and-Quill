@@ -69,7 +69,7 @@ class GroupController extends StateNotifier<bool> {
     final res = await _groupRepository.createGroup(context, group);
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
-      Routemaster.of(context).pop();
+      Routemaster.of(context).history.back();
     });
   }
 

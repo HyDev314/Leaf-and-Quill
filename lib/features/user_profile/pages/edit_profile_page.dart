@@ -99,7 +99,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                   onPressed: () => showDialog<String>(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
-                      title: Text('Lưu thay đổi cộng đồng ?',
+                      title: Text('Lưu thay đổi trang cá nhân ?',
                           style: Theme.of(context)
                               .textTheme
                               .displayLarge!
@@ -288,7 +288,6 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                               ),
                               contentPadding: const EdgeInsets.all(10),
                             ),
-                            maxLength: 50,
                           ),
                         ],
                       ),
