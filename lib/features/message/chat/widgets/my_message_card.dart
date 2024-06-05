@@ -46,7 +46,7 @@ class MyMessageCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(18),
             ),
             color: AppPalette.mainColor,
-            margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Stack(
               children: [
                 Padding(
@@ -64,14 +64,9 @@ class MyMessageCard extends StatelessWidget {
                           bottom: 30,
                         ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (isReplying) ...[
-                        Text(
-                          username,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
                         const SizedBox(height: 10),
                         Container(
                           padding: const EdgeInsets.all(10),
@@ -84,9 +79,10 @@ class MyMessageCard extends StatelessWidget {
                             ),
                           ),
                           child: DisplayTextImageGIF(
-                              message: repliedText,
-                              type: repliedMessageType,
-                              isMe: false),
+                            message: repliedText,
+                            type: repliedMessageType,
+                            isMe: false,
+                          ),
                         ),
                         const SizedBox(height: 8),
                       ],

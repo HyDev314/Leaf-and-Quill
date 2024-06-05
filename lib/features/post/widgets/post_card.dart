@@ -11,54 +11,76 @@ import 'package:leaf_and_quill_app/themes/palette.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class PostCard extends ConsumerWidget {
+class PostCard extends ConsumerStatefulWidget {
   final PostModel post;
 
   const PostCard({super.key, required this.post});
 
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _PostCardState();
+}
+
+class _PostCardState extends ConsumerState<PostCard> {
+  bool flag = false;
+
   void deletePost(WidgetRef ref, BuildContext context) async {
     ref
         .read(postControllerProvider.notifier)
-        .deletePost(context: context, post: post);
+        .deletePost(context: context, post: widget.post);
+  }
+
+  void approvePost(WidgetRef ref, BuildContext context) async {
+    ref
+        .read(postControllerProvider.notifier)
+        .approvePost(context: context, post: widget.post);
   }
 
   void upvotePost(WidgetRef ref) async {
-    ref.read(postControllerProvider.notifier).upvote(post);
+    ref.read(postControllerProvider.notifier).upvote(widget.post);
   }
 
   void downvotePost(WidgetRef ref) async {
-    ref.read(postControllerProvider.notifier).downvote(post);
+    ref.read(postControllerProvider.notifier).downvote(widget.post);
   }
 
   void navigateToUser(BuildContext context) {
-    Routemaster.of(context).push('/u/${post.uid}');
+    Routemaster.of(context).push('/u/${widget.post.uid}');
   }
 
   void navigateToCommunity(BuildContext context) {
-    Routemaster.of(context).push('/r/${post.communityId}');
+    Routemaster.of(context).push('/r/${widget.post.communityId}');
   }
 
   void navigateToPostDetails(BuildContext context) {
-    Routemaster.of(context).push('/post/${post.id}/details');
+    Routemaster.of(context).push('/post/${widget.post.id}/details');
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final currentUser = ref.watch(userProvider)!;
+
+    String displayedText = widget.post.description;
+    if (!flag && widget.post.description.length > 50) {
+      displayedText = '${widget.post.description.substring(0, 50)}...';
+    }
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: GestureDetector(
-        onTap: () => navigateToPostDetails(context),
+        onTap: widget.post.isApprove
+            ? () => navigateToPostDetails(context)
+            : () {},
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ref.watch(getCommunityByIdProvider(post.communityId)).when(
+                ref
+                    .watch(getCommunityByIdProvider(widget.post.communityId))
+                    .when(
                       data: (community) => ref
-                          .watch(getUserDataProvider(post.uid))
+                          .watch(getUserDataProvider(widget.post.uid))
                           .when(
                             data: (user) => Row(
                               children: [
@@ -71,8 +93,8 @@ class PostCard extends ConsumerWidget {
                                         top: 0,
                                         left: 0,
                                         child: SizedBox(
-                                          height: 45,
-                                          width: 45,
+                                          height: 40,
+                                          width: 40,
                                           child: CircleAvatar(
                                             radius: 10,
                                             backgroundImage:
@@ -84,8 +106,8 @@ class PostCard extends ConsumerWidget {
                                         bottom: 0,
                                         right: 0,
                                         child: SizedBox(
-                                          height: 35,
-                                          width: 35,
+                                          height: 30,
+                                          width: 30,
                                           child: CircleAvatar(
                                             radius: 10,
                                             backgroundImage:
@@ -133,7 +155,8 @@ class PostCard extends ConsumerWidget {
                                           ),
                                           const SizedBox(width: 10),
                                           Text(
-                                            timeago.format(post.createdAt),
+                                            timeago
+                                                .format(widget.post.createdAt),
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .displaySmall!
@@ -147,8 +170,10 @@ class PostCard extends ConsumerWidget {
                                     ],
                                   ),
                                 ),
-                                (community.mods.contains(currentUser.uid) ||
-                                        post.uid == currentUser.uid)
+                                ((community.mods.contains(currentUser.uid) ||
+                                            widget.post.uid ==
+                                                currentUser.uid) &&
+                                        widget.post.isApprove == true)
                                     ? IconButton(
                                         onPressed: () => showDialog<String>(
                                           context: context,
@@ -176,8 +201,9 @@ class PostCard extends ConsumerWidget {
                                                         )),
                                               ),
                                               TextButton(
-                                                onPressed: () =>
-                                                    deletePost(ref, context),
+                                                onPressed: () {
+                                                  deletePost(ref, context);
+                                                },
                                                 child: Text('Xác nhận',
                                                     style: Theme.of(context)
                                                         .textTheme
@@ -207,7 +233,7 @@ class PostCard extends ConsumerWidget {
                     ),
                 const SizedBox(height: 15),
                 Text(
-                  post.title,
+                  widget.post.title,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   style: Theme.of(context).textTheme.displayLarge!.copyWith(
@@ -215,11 +241,11 @@ class PostCard extends ConsumerWidget {
                       ),
                 ),
                 const SizedBox(height: 10),
-                (post.link != '')
+                (widget.post.link != '')
                     ? Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Text(
-                          'link: ${post.link}',
+                          'link: ${widget.post.link}',
                           overflow: TextOverflow.ellipsis,
                           maxLines: 3,
                           style: Theme.of(context)
@@ -231,96 +257,186 @@ class PostCard extends ConsumerWidget {
                         ),
                       )
                     : const SizedBox(),
-                (post.description != '')
-                    ? Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Text(
-                          post.description,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 3,
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall!
-                              .copyWith(
-                                fontSize: 16,
+                (widget.post.description != '')
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            displayedText,
+                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall!
+                                .copyWith(fontSize: 16),
+                          ),
+                          const SizedBox(height: 5),
+                          if (widget.post.description.length > 50)
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  flag = !flag;
+                                });
+                              },
+                              child: Text(
+                                flag ? 'Thu gọn' : 'Xem thêm',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                        fontSize: 15,
+                                        color: AppPalette.mainColor),
                               ),
-                        ),
+                            ),
+                        ],
                       )
                     : const SizedBox(),
-                (post.image != '')
+                (widget.post.image != '')
                     ? Padding(
                         padding: const EdgeInsets.only(top: 15),
                         child: SizedBox(
                             height: 250,
                             width: double.infinity,
                             child: Image.network(
-                              post.image,
+                              widget.post.image,
                               fit: BoxFit.cover,
                             )),
                       )
                     : const SizedBox(),
-                (post.link != '' && post.image == '')
+                (widget.post.link != '' && widget.post.image == '')
                     ? AnyLinkPreview(
                         displayDirection: UIDirection.uiDirectionHorizontal,
-                        link: post.link,
+                        link: widget.post.link,
                       )
                     : const SizedBox(),
                 const SizedBox(height: 10),
-                IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      IconButton(
-                        onPressed: () => upvotePost(ref),
-                        icon: Icon(
-                          Icons.thumb_up_rounded,
-                          color: post.upvotes.contains(currentUser.uid)
-                              ? AppPalette.mainColor
-                              : AppPalette.secondColor,
-                        ),
-                      ),
-                      Text(
-                        '${post.upvotes.length}',
-                        style:
-                            Theme.of(context).textTheme.displaySmall!.copyWith(
-                                  fontSize: 16,
-                                ),
-                      ),
-                      IconButton(
-                        onPressed: () => downvotePost(ref),
-                        icon: Icon(
-                          Icons.thumb_down_rounded,
-                          color: post.downvotes.contains(currentUser.uid)
-                              ? AppPalette.redColor
-                              : AppPalette.secondColor,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                        child: VerticalDivider(
-                          color: AppPalette.greyColor,
-                          thickness: 1,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () => navigateToPostDetails(context),
-                        icon: const Icon(
-                          Icons.comment_rounded,
-                          color: AppPalette.secondColor,
-                        ),
-                      ),
-                      Text(
-                        post.commentCount.toString(),
-                        style:
-                            Theme.of(context).textTheme.displaySmall!.copyWith(
-                                  fontSize: 16,
-                                ),
-                      ),
-                      const SizedBox(width: 10)
-                    ],
-                  ),
+                Text(
+                  widget.post.type,
+                  style: Theme.of(context)
+                      .textTheme
+                      .displaySmall!
+                      .copyWith(fontSize: 15),
                 ),
+                const SizedBox(height: 10),
+                widget.post.isApprove
+                    ? IntrinsicHeight(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(18)),
+                              border: Border.all(
+                                  color:
+                                      AppPalette.secondColor.withOpacity(0.5),
+                                  width: 1)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              IconButton(
+                                onPressed: () => upvotePost(ref),
+                                icon: Icon(
+                                  Icons.thumb_up_rounded,
+                                  color: widget.post.upvotes
+                                          .contains(currentUser.uid)
+                                      ? AppPalette.mainColor
+                                      : AppPalette.secondColor,
+                                ),
+                              ),
+                              Text(
+                                '${widget.post.upvotes.length}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                      fontSize: 16,
+                                    ),
+                              ),
+                              IconButton(
+                                onPressed: () => downvotePost(ref),
+                                icon: Icon(
+                                  Icons.thumb_down_rounded,
+                                  color: widget.post.downvotes
+                                          .contains(currentUser.uid)
+                                      ? AppPalette.redColor
+                                      : AppPalette.secondColor,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                                child: VerticalDivider(
+                                  color: AppPalette.greyColor,
+                                  thickness: 1,
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () => navigateToPostDetails(context),
+                                icon: const Icon(
+                                  Icons.comment_rounded,
+                                  color: AppPalette.secondColor,
+                                ),
+                              ),
+                              Text(
+                                widget.post.commentCount.toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                      fontSize: 16,
+                                    ),
+                              ),
+                              const Spacer(),
+                              IconButton(
+                                onPressed: () {},
+                                icon: const Icon(
+                                  Icons.share_rounded,
+                                  color: AppPalette.secondColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : Container(
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(18)),
+                            border: Border.all(
+                                color: AppPalette.secondColor.withOpacity(0.5),
+                                width: 1)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              SizedBox(
+                                height: 40,
+                                width: 100,
+                                child: ElevatedButton(
+                                  onPressed: () => deletePost(ref, context),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppPalette.greyColor),
+                                  child: Text('Hủy',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelSmall!
+                                          .copyWith(fontSize: 16)),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 40,
+                                width: 100,
+                                child: ElevatedButton(
+                                  onPressed: () => approvePost(ref, context),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppPalette.mainColor),
+                                  child: Text('Duyệt',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelSmall!
+                                          .copyWith(fontSize: 16)),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
               ],
             ),
           ),

@@ -57,4 +57,16 @@ class NotificationRepository {
               .toList(),
         );
   }
+
+  // FutureVoid deleteNotificationByCommunity(
+  //     String communityId) async {
+  //   try {
+  //     return right(
+  //         _notifications.where('communityId', isEqualTo: communityId).);
+  //   } on FirebaseException catch (e) {
+  //     throw e.message!;
+  //   } catch (e) {
+  //     return left(Failure(e.toString()));
+  //   }
+  // }
 }

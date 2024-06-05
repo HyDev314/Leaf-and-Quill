@@ -45,6 +45,7 @@ dependencies:
   permission_handler: ^11.3.1
   swipe_to: ^1.0.2
   photo_view: ^0.15.0
+  smooth_page_indicator: ^1.1.0
   
 
 dev_dependencies:
@@ -53,7 +54,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-flutter_icons:
+flutter pub run flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/images/app_logo.png"
@@ -63,7 +64,10 @@ flutter_native_splash:
   ios: true
   color: "#FFFFFF"
   image: "assets/images/app_logo.png"
-  android_12: true
+
+  android_12: 
+    color: "#FFFFFF"
+    image: "assets/images/app_logo.png"
 
 
 flutter:

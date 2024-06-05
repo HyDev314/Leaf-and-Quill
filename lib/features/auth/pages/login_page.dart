@@ -37,12 +37,12 @@ class LoginPage extends ConsumerWidget {
         children: [
           Image.asset(
             AppConstants.appLogo,
-            height: 250,
+            height: 400,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Text(
-              'Leaf & Quill',
+              'The Community',
               style: Theme.of(context)
                   .textTheme
                   .displayLarge!

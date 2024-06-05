@@ -23,4 +23,6 @@ class AppPalette {
   static const Color textColor = Color(0xFF2F2D2C);
   static const Color greyColor = Color(0xFF9B9B9B);
   static const Color redColor = Color(0xFFFF5252);
+  static const Color blueColor = Color(0xFF52A6FF);
+  static const Color greenColor = Color(0xFF52FF86);
 }

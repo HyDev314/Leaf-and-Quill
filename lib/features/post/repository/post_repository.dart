@@ -124,6 +124,25 @@ class PostRepository {
         (event) => CommentModel.fromMap(event.data() as Map<String, dynamic>));
   }
 
+  Stream<List<PostModel>> getHotNews(List<CommunityModel> communities) {
+    return _posts
+        .where('isDeleted', isEqualTo: false)
+        .where('isApprove', isEqualTo: true)
+        .where('communityId', whereIn: communities.map((e) => e.id).toList())
+        .orderBy('interest', descending: true)
+        .limit(5)
+        .snapshots()
+        .map(
+          (event) => event.docs
+              .map(
+                (e) => PostModel.fromMap(
+                  e.data() as Map<String, dynamic>,
+                ),
+              )
+              .toList(),
+        );
+  }
+
   Future<List<PostModel>> fetchPosts({
     required List<CommunityModel> communities,
     required int limit,
@@ -131,6 +150,7 @@ class PostRepository {
   }) async {
     Query query = _posts
         .where('isDeleted', isEqualTo: false)
+        .where('isApprove', isEqualTo: true)
         .where('communityId', whereIn: communities.map((e) => e.id).toList())
         .orderBy('createdAt', descending: true)
         .limit(limit);
@@ -152,6 +172,7 @@ class PostRepository {
   }) async {
     Query query = _posts
         .where('isDeleted', isEqualTo: false)
+        .where('isApprove', isEqualTo: true)
         .where('uid', isEqualTo: uid)
         .orderBy('createdAt', descending: true)
         .limit(limit);
@@ -169,13 +190,20 @@ class PostRepository {
   Future<List<PostModel>> fetchUserCommunityPosts({
     required String id,
     required int limit,
+    required bool isApprove,
+    String? type,
     PostModel? lastPost,
   }) async {
     Query query = _posts
         .where('isDeleted', isEqualTo: false)
+        .where('isApprove', isEqualTo: isApprove)
         .where('communityId', isEqualTo: id)
         .orderBy('createdAt', descending: true)
         .limit(limit);
+
+    if (type != null) {
+      query = query.where('type', isEqualTo: type);
+    }
 
     if (lastPost != null) {
       query = query.startAfterDocument(await _posts.doc(lastPost.id).get());
@@ -185,5 +213,17 @@ class PostRepository {
     return snapshot.docs
         .map((doc) => PostModel.fromMap(doc.data() as Map<String, dynamic>))
         .toList();
+  }
+
+  FutureVoid updatePostInterest(PostModel post) async {
+    try {
+      return right(_posts.doc(post.id).update({
+        'interest': post.interest,
+      }));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
   }
 }

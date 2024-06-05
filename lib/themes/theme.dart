@@ -21,10 +21,13 @@ class AppTheme {
   static var lightThemeMode = ThemeData.light().copyWith(
     scaffoldBackgroundColor: AppPalette.lightBackgroundColor,
     appBarTheme: const AppBarTheme(
-      backgroundColor: AppPalette.lightCardColor,
+      backgroundColor: AppPalette.lightBackgroundColor,
       iconTheme: IconThemeData(
         color: AppPalette.darkBackgroundColor,
       ),
+    ),
+    dialogTheme: const DialogTheme(
+      backgroundColor: AppPalette.lightCardColor,
     ),
     cardTheme: CardTheme(
       color: AppPalette.lightCardColor,
@@ -92,10 +95,13 @@ class AppTheme {
   static var darkThemeMode = ThemeData.dark().copyWith(
     scaffoldBackgroundColor: AppPalette.darkBackgroundColor,
     appBarTheme: const AppBarTheme(
-      backgroundColor: AppPalette.darkCardColor,
+      backgroundColor: AppPalette.darkBackgroundColor,
       iconTheme: IconThemeData(
         color: AppPalette.lightBackgroundColor,
       ),
+    ),
+    dialogTheme: const DialogTheme(
+      backgroundColor: AppPalette.darkCardColor,
     ),
     cardTheme: CardTheme(
       color: AppPalette.darkCardColor,

@@ -70,7 +70,6 @@ class AuthRepository {
           uid: userCredential.user!.uid,
           isAuthenticated: true,
           friends: [],
-          groupId: [],
         );
         await _users.doc(userCredential.user!.uid).set(userModel.toMap());
       } else {

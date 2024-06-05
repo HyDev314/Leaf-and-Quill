@@ -1,29 +1,53 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:leaf_and_quill_app/core/enums/enums.dart';
 import 'package:leaf_and_quill_app/core/providers/storage_repository_provider.dart';
 import 'package:leaf_and_quill_app/core/utils/show_snackbar.dart';
 import 'package:leaf_and_quill_app/features/auth/controller/auth_controller.dart';
-import 'package:leaf_and_quill_app/features/notification/repository/notification_repository.dart';
+import 'package:leaf_and_quill_app/features/notification/controller/notification_controller.dart';
 import 'package:leaf_and_quill_app/features/post/repository/post_repository.dart';
 import 'package:leaf_and_quill_app/models/comment_model.dart';
 import 'package:leaf_and_quill_app/models/community_model.dart';
-import 'package:leaf_and_quill_app/models/notification_model.dart';
 import 'package:leaf_and_quill_app/models/post_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
 
 final postControllerProvider =
-    StateNotifierProvider<PostController, List<PostModel>>((ref) {
+    StateNotifierProvider<PostController, bool>((ref) {
   final postRepository = ref.watch(postRepositoryProvider);
-  final notificationRepository = ref.watch(notificationRepositoryProvider);
   final storageRepository = ref.watch(storageRepositoryProvider);
   return PostController(
     postRepository: postRepository,
-    notificationRepository: notificationRepository,
     storageRepository: storageRepository,
     ref: ref,
   );
+});
+
+final getHotNewsProvider =
+    StreamProvider.family((ref, List<CommunityModel> communities) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.getHotNews(communities);
+});
+
+final feedPostControllerProvider =
+    StateNotifierProvider<FeedPostController, List<PostModel>>((ref) {
+  final postRepository = ref.watch(postRepositoryProvider);
+  return FeedPostController(
+    postRepository: postRepository,
+  );
+});
+
+final communityPostControllerProvider =
+    StateNotifierProvider<CommunityPostController, List<PostModel>>((ref) {
+  final postRepository = ref.watch(postRepositoryProvider);
+  return CommunityPostController(postRepository: postRepository);
+});
+
+final userPostControllerProvider =
+    StateNotifierProvider<UserPostController, List<PostModel>>((ref) {
+  final postRepository = ref.watch(postRepositoryProvider);
+  return UserPostController(postRepository: postRepository);
 });
 
 final getPostByIdProvider = StreamProvider.family((ref, String postId) {
@@ -40,22 +64,19 @@ final getCommentByIdProvider = StreamProvider.family((ref, String id) {
   return ref.watch(postControllerProvider.notifier).getCommentById(id);
 });
 
-class PostController extends StateNotifier<List<PostModel>> {
-  final NotificationRepository _notificationRepository;
+class PostController extends StateNotifier<bool> {
   final PostRepository _postRepository;
   final Ref _ref;
   final StorageRepository _storageRepository;
 
   PostController(
       {required PostRepository postRepository,
-      required NotificationRepository notificationRepository,
       required Ref ref,
       required StorageRepository storageRepository})
       : _postRepository = postRepository,
-        _notificationRepository = notificationRepository,
         _ref = ref,
         _storageRepository = storageRepository,
-        super([]);
+        super(false);
 
   void sharePost({
     required BuildContext context,
@@ -66,7 +87,6 @@ class PostController extends StateNotifier<List<PostModel>> {
     File? file,
     String? description,
   }) async {
-    state = [];
     String postId = const Uuid().v1();
     final user = _ref.read(userProvider)!;
 
@@ -74,7 +94,7 @@ class PostController extends StateNotifier<List<PostModel>> {
 
     if (file != null) {
       final imageRes = await _storageRepository.storeFile(
-        path: 'posts/${selectedCommunity.name}',
+        path: 'posts/${selectedCommunity.id}',
         id: postId,
         file: file,
       );
@@ -91,6 +111,8 @@ class PostController extends StateNotifier<List<PostModel>> {
           downvotes: [],
           commentCount: 0,
           uid: user.uid,
+          interest: 0,
+          isApprove: selectedCommunity.mods.contains(user.uid),
           type: type,
           createdAt: DateTime.now(),
           isDeleted: false,
@@ -108,6 +130,8 @@ class PostController extends StateNotifier<List<PostModel>> {
         downvotes: [],
         commentCount: 0,
         uid: user.uid,
+        interest: 0,
+        isApprove: selectedCommunity.mods.contains(user.uid),
         type: type,
         createdAt: DateTime.now(),
         isDeleted: false,
@@ -115,9 +139,8 @@ class PostController extends StateNotifier<List<PostModel>> {
     }
 
     final res = await _postRepository.addPost(post);
-    state = [post, ...state];
     res.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Posted successfully!');
+      showSnackBar(context, 'Đăng bài viết thành công! Đợi phê duyệt');
       Routemaster.of(context).pop();
     });
   }
@@ -129,25 +152,47 @@ class PostController extends StateNotifier<List<PostModel>> {
     post = post.copyWith(isDeleted: true);
 
     final res = await _postRepository.editPost(post);
-    state = state.where((p) => p.id != post.id).toList();
     res.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Post Deleted successfully!');
+      showSnackBar(context, 'Xóa bài viết thành công!');
       Routemaster.of(context).pop();
+    });
+  }
+
+  void approvePost(
+      {required BuildContext context, required PostModel post}) async {
+    post = post.copyWith(isApprove: true);
+
+    final res = await _postRepository.editPost(post);
+    res.fold((l) => showSnackBar(context, l.message), (r) {
+      showSnackBar(context, 'Duyệt bài viết thành công!');
     });
   }
 
   void upvote(PostModel post) async {
     final uid = _ref.read(userProvider)!.uid;
+    _ref
+        .read(postControllerProvider.notifier)
+        .updatePostInterest(post, TPI.upVote);
     _postRepository.upvote(post, uid);
   }
 
   void downvote(PostModel post) async {
     final uid = _ref.read(userProvider)!.uid;
+    _ref
+        .read(postControllerProvider.notifier)
+        .updatePostInterest(post, TPI.downVote);
     _postRepository.downvote(post, uid);
   }
 
   Stream<PostModel> getPostById(String postId) {
     return _postRepository.getPostById(postId);
+  }
+
+  Stream<List<PostModel>> getHotNews(List<CommunityModel> communities) {
+    if (communities.isNotEmpty) {
+      return _postRepository.getHotNews(communities);
+    }
+    return Stream.value([]);
   }
 
   void addComment({
@@ -158,7 +203,6 @@ class PostController extends StateNotifier<List<PostModel>> {
   }) async {
     final uid = _ref.read(userProvider)?.uid ?? '';
     String commentId = const Uuid().v1();
-    String notificationId = const Uuid().v1();
 
     late CommentModel comment;
 
@@ -192,22 +236,15 @@ class PostController extends StateNotifier<List<PostModel>> {
       );
     }
 
-    if (uid != post.uid) {
-      NotificationModel notification = NotificationModel(
-          id: notificationId,
-          uid: post.uid,
-          commentId: commentId,
-          createdAt: DateTime.now(),
-          isRead: false,
-          isDeleted: false);
+    _ref
+        .read(notificationControllerProvider.notifier)
+        .createNotification(context: context, commentId: commentId, post: post);
 
-      final res2 =
-          await _notificationRepository.createNotification(notification);
-      res2.fold((l) => showSnackBar(context, l.message), (r) => null);
-    }
-
-    final res1 = await _postRepository.addComment(comment);
-    res1.fold((l) => showSnackBar(context, l.message), (r) => null);
+    _ref
+        .read(postControllerProvider.notifier)
+        .updatePostInterest(post, TPI.comment);
+    final res = await _postRepository.addComment(comment);
+    res.fold((l) => showSnackBar(context, l.message), (r) => null);
   }
 
   Stream<List<CommentModel>> fetchPostComments(String postId) {
@@ -218,13 +255,28 @@ class PostController extends StateNotifier<List<PostModel>> {
     return _postRepository.getCommentById(id);
   }
 
+  void updatePostInterest(PostModel post, TPI interest) async {
+    post = post.copyWith(interest: post.interest + interest.interest);
+
+    final res = await _postRepository.updatePostInterest(post);
+    res.fold((l) => null, (r) => null);
+  }
+}
+
+class FeedPostController extends StateNotifier<List<PostModel>> {
+  final PostRepository _postRepository;
+
+  FeedPostController({
+    required PostRepository postRepository,
+  })  : _postRepository = postRepository,
+        super([]);
+
   final int _limit = 10;
   bool _hasMore = true;
   bool _isLoading = false;
 
   bool get hasMore => _hasMore;
 
-  //Feed_Page
   Future<void> fetchInitialPosts(List<CommunityModel> communities) async {
     if (_isLoading) return;
     _isLoading = true;
@@ -270,8 +322,125 @@ class PostController extends StateNotifier<List<PostModel>> {
     _hasMore = posts.length == _limit;
     _isLoading = false;
   }
+}
 
-  //User_profile_Page
+class CommunityPostController extends StateNotifier<List<PostModel>> {
+  final PostRepository _postRepository;
+
+  CommunityPostController({required PostRepository postRepository})
+      : _postRepository = postRepository,
+        super([]);
+
+  final int _limit = 10;
+  bool _hasMore = true;
+  bool _isLoading = false;
+
+  bool get hasMore => _hasMore;
+
+  Future<void> fetchInitialCommunityPosts({
+    required String id,
+    required bool isApprove,
+    String? type,
+  }) async {
+    if (_isLoading) return;
+    _isLoading = true;
+
+    List<PostModel> posts = [];
+
+    if (type != null) {
+      posts = await _postRepository.fetchUserCommunityPosts(
+        id: id,
+        limit: _limit,
+        isApprove: isApprove,
+        type: type,
+      );
+    } else {
+      posts = await _postRepository.fetchUserCommunityPosts(
+        id: id,
+        limit: _limit,
+        isApprove: isApprove,
+      );
+    }
+
+    state = posts;
+    _hasMore = posts.length == _limit;
+    _isLoading = false;
+  }
+
+  Future<void> refreshCommunityPosts(
+      {required String id, required bool isApprove, String? type}) async {
+    if (_isLoading) return;
+    _isLoading = true;
+
+    List<PostModel> posts = [];
+
+    if (type != null) {
+      posts = await _postRepository.fetchUserCommunityPosts(
+        id: id,
+        limit: _limit,
+        isApprove: isApprove,
+        type: type,
+      );
+    } else {
+      posts = await _postRepository.fetchUserCommunityPosts(
+        id: id,
+        limit: _limit,
+        isApprove: isApprove,
+      );
+    }
+
+    state = posts;
+    _hasMore = posts.length == _limit;
+    _isLoading = false;
+  }
+
+  Future<void> fetchMoreCommunityPosts(
+      {required String id, required bool isApprove, String? type}) async {
+    if (_isLoading || !_hasMore) return;
+    _isLoading = true;
+
+    final lastPost = state.isNotEmpty ? state.last : null;
+
+    List<PostModel> posts = [];
+
+    if (type != null) {
+      posts = await _postRepository.fetchUserCommunityPosts(
+        id: id,
+        limit: _limit,
+        isApprove: isApprove,
+        lastPost: lastPost,
+        type: type,
+      );
+    } else {
+      posts = await _postRepository.fetchUserCommunityPosts(
+        id: id,
+        limit: _limit,
+        isApprove: isApprove,
+        lastPost: lastPost,
+      );
+    }
+
+    if (posts.isNotEmpty) {
+      state = [...state, ...posts];
+    }
+    _hasMore = posts.length == _limit;
+    _isLoading = false;
+  }
+}
+
+class UserPostController extends StateNotifier<List<PostModel>> {
+  final PostRepository _postRepository;
+
+  UserPostController({required PostRepository postRepository})
+      : _postRepository = postRepository,
+        super([]);
+
+  final int _limit = 10;
+  bool _hasMore = true;
+  bool _isLoading = false;
+
+  bool get hasMore => _hasMore;
+
   Future<void> fetchInitialUserPosts(String uid) async {
     if (_isLoading) return;
     _isLoading = true;
@@ -307,53 +476,6 @@ class PostController extends StateNotifier<List<PostModel>> {
     final lastPost = state.isNotEmpty ? state.last : null;
     final posts = await _postRepository.fetchUserPosts(
       uid: uid,
-      limit: _limit,
-      lastPost: lastPost,
-    );
-
-    if (posts.isNotEmpty) {
-      state = [...state, ...posts];
-    }
-    _hasMore = posts.length == _limit;
-    _isLoading = false;
-  }
-
-  //User_profile_Page
-  Future<void> fetchInitialCommunityPosts(String id) async {
-    if (_isLoading) return;
-    _isLoading = true;
-
-    final posts = await _postRepository.fetchUserCommunityPosts(
-      id: id,
-      limit: _limit,
-    );
-
-    state = posts;
-    _hasMore = posts.length == _limit;
-    _isLoading = false;
-  }
-
-  Future<void> refreshCommunityPosts(String id) async {
-    if (_isLoading) return;
-    _isLoading = true;
-
-    final posts = await _postRepository.fetchUserCommunityPosts(
-      id: id,
-      limit: _limit,
-    );
-
-    state = posts;
-    _hasMore = posts.length == _limit;
-    _isLoading = false;
-  }
-
-  Future<void> fetchMoreCommunityPosts(String id) async {
-    if (_isLoading || !_hasMore) return;
-    _isLoading = true;
-
-    final lastPost = state.isNotEmpty ? state.last : null;
-    final posts = await _postRepository.fetchUserCommunityPosts(
-      id: id,
       limit: _limit,
       lastPost: lastPost,
     );

@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:leaf_and_quill_app/core/enums/enums.dart';
 import 'package:leaf_and_quill_app/features/feed/pages/feed_page.dart';
 import 'package:leaf_and_quill_app/features/menu/pages/menu_page.dart';
 import 'package:leaf_and_quill_app/features/notification/pages/notification_page.dart';
 import 'package:leaf_and_quill_app/features/search/pages/search_page.dart';
+
+class Topic {
+  final String text;
+  final PostEnum? type;
+
+  Topic({required this.text, required this.type});
+}
 
 class AppConstants {
   static const String imagePath = 'assets/images/';
@@ -12,10 +20,11 @@ class AppConstants {
   static const avatarDefault =
       'https://static.vecteezy.com/system/resources/previews/026/966/960/non_2x/default-avatar-profile-icon-of-social-media-user-vector.jpg';
 
-  static const List<String> topics = [
-    'Tán gẫu',
-    'Học tập',
-    'Blah blah',
+  static List<Topic> topics = [
+    Topic(text: 'Tất cả', type: null),
+    Topic(text: 'Chuyện thường ngày', type: PostEnum.type1),
+    Topic(text: 'Hỏi đáp', type: PostEnum.type2),
+    Topic(text: 'Chia sẻ kinh nghiệm', type: PostEnum.type3),
   ];
 
   static const noConnectionErrorMessage = 'Không có kết nối mạng!';
@@ -26,6 +35,8 @@ class AppConstants {
     const NotificationPage(),
     const MenuPage(),
   ];
+
+  static const String CCID = '';
 
   static const String fontFamily = 'Nunito';
 

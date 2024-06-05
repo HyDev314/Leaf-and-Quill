@@ -304,8 +304,6 @@ class _PostDetailsPageState extends ConsumerState<PostDetailsPage> {
                             padding: const EdgeInsets.only(bottom: 10),
                             child: Text(
                               post.description,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 3,
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall!
@@ -331,9 +329,18 @@ class _PostDetailsPageState extends ConsumerState<PostDetailsPage> {
                         : const SizedBox(),
                     const SizedBox(height: 10),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        Text(
+                          post.type,
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall!
+                              .copyWith(
+                                fontSize: 15,
+                              ),
+                        ),
+                        const Spacer(),
                         IconButton(
                           onPressed: () => upvotePost(ref, post),
                           icon: Icon(
@@ -361,7 +368,14 @@ class _PostDetailsPageState extends ConsumerState<PostDetailsPage> {
                                 : AppPalette.secondColor,
                           ),
                         ),
-                        const SizedBox(width: 10)
+                        const SizedBox(width: 10),
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.share_rounded,
+                            color: AppPalette.secondColor,
+                          ),
+                        ),
                       ],
                     ),
                     Card(
@@ -369,7 +383,7 @@ class _PostDetailsPageState extends ConsumerState<PostDetailsPage> {
                         borderRadius: BorderRadius.circular(18),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 10),
+                        padding: const EdgeInsets.only(left: 15),
                         child: Row(
                           children: [
                             Expanded(

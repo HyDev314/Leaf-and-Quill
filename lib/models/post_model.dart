@@ -9,7 +9,9 @@ class PostModel {
   final List<String> downvotes;
   final int commentCount;
   final String uid;
+  final int interest;
   final String type;
+  final bool isApprove;
   final DateTime createdAt;
   final bool isDeleted;
 
@@ -24,7 +26,9 @@ class PostModel {
       required this.downvotes,
       required this.commentCount,
       required this.uid,
+      required this.interest,
       required this.type,
+      required this.isApprove,
       required this.createdAt,
       required this.isDeleted});
 
@@ -39,7 +43,9 @@ class PostModel {
     List<String>? downvotes,
     int? commentCount,
     String? uid,
+    int? interest,
     String? type,
+    bool? isApprove,
     DateTime? createdAt,
     bool? isDeleted,
   }) {
@@ -54,7 +60,9 @@ class PostModel {
       downvotes: downvotes ?? this.downvotes,
       commentCount: commentCount ?? this.commentCount,
       uid: uid ?? this.uid,
+      interest: interest ?? this.interest,
       type: type ?? this.type,
+      isApprove: isApprove ?? this.isApprove,
       createdAt: createdAt ?? this.createdAt,
       isDeleted: isDeleted ?? this.isDeleted,
     );
@@ -72,7 +80,9 @@ class PostModel {
       'downvotes': downvotes,
       'commentCount': commentCount,
       'uid': uid,
+      'interest': interest,
       'type': type,
+      'isApprove': isApprove,
       'createdAt': createdAt.millisecondsSinceEpoch,
       'isDeleted': isDeleted,
     };
@@ -90,9 +100,16 @@ class PostModel {
       downvotes: List<String>.from(map['downvotes']),
       commentCount: map['commentCount']?.toInt() ?? 0,
       uid: map['uid'] ?? '',
+      interest: map['interest']?.toInt() ?? 0,
       type: map['type'] ?? '',
+      isApprove: map['isApprove'] ?? false,
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
       isDeleted: map['isDeleted'] ?? false,
     );
+  }
+
+  @override
+  String toString() {
+    return 'PostModel(id: $id, title: $title, link: $link, image: $image, description: $description, communityId: $communityId, upvotes: $upvotes, downvotes: $downvotes, commentCount: $commentCount, uid: $uid, interest: $interest, type: $type, isApprove: $isApprove, createdAt: $createdAt, isDeleted: $isDeleted)';
   }
 }

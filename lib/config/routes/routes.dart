@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:leaf_and_quill_app/core/common/splash.dart';
 import 'package:leaf_and_quill_app/features/auth/pages/login_page.dart';
 import 'package:leaf_and_quill_app/features/community/pages/add_mods_page.dart';
+import 'package:leaf_and_quill_app/features/community/pages/approve_posts_screen.dart';
 import 'package:leaf_and_quill_app/features/community/pages/community_page.dart';
 import 'package:leaf_and_quill_app/features/community/pages/create_community_page.dart';
 import 'package:leaf_and_quill_app/features/community/pages/edit_community_page.dart';
@@ -36,6 +37,10 @@ final loggedInRoute = RouteMap(
         )),
     '/mod-tools/:id': (routeData) => MaterialPage(
             child: ModToolsPage(
+          id: routeData.pathParameters['id']!,
+        )),
+    '/approve-posts/:id': (routeData) => MaterialPage(
+            child: ApprovePostScreen(
           id: routeData.pathParameters['id']!,
         )),
     '/edit-community/:id': (routeData) {

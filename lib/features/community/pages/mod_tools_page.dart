@@ -30,7 +30,7 @@ class ModToolsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SkeletonPage(
       title: Text(
-        'Mod Tools',
+        'Cài đặt cộng đồng',
         style: Theme.of(context).textTheme.displayLarge!.copyWith(
               fontSize: 22,
             ),

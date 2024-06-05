@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:leaf_and_quill_app/core/common/error.dart';
 import 'package:leaf_and_quill_app/core/common/loader.dart';
 import 'package:leaf_and_quill_app/core/common/widgets/skeleton.dart';
+import 'package:leaf_and_quill_app/core/enums/enums.dart';
 import 'package:leaf_and_quill_app/core/utils/pick_image.dart';
-import 'package:leaf_and_quill_app/core/utils/show_snackbar.dart';
 import 'package:leaf_and_quill_app/features/auth/controller/auth_controller.dart';
 import 'package:leaf_and_quill_app/features/community/controller/community_controller.dart';
 import 'package:leaf_and_quill_app/features/post/controller/post_controller.dart';
@@ -17,7 +17,8 @@ import 'package:leaf_and_quill_app/themes/theme.dart';
 import 'package:routemaster/routemaster.dart';
 
 class AddPostPage extends ConsumerStatefulWidget {
-  const AddPostPage({super.key});
+  final String? communityId;
+  const AddPostPage({super.key, this.communityId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AddPostPageState();
@@ -30,6 +31,7 @@ class _AddPostPageState extends ConsumerState<AddPostPage> {
   File? imageFile;
   List<CommunityModel> communities = [];
   CommunityModel? selectedCommunity;
+  PostEnum? postType;
   bool _isError = false;
 
   @override
@@ -50,7 +52,7 @@ class _AddPostPageState extends ConsumerState<AddPostPage> {
     }
   }
 
-  void sharePost(String type) {
+  void sharePost() {
     if (titleController.text.isNotEmpty) {
       ref.read(postControllerProvider.notifier).sharePost(
           context: context,
@@ -59,9 +61,7 @@ class _AddPostPageState extends ConsumerState<AddPostPage> {
           description: descriptionController.text.trim(),
           file: imageFile,
           selectedCommunity: selectedCommunity ?? communities[0],
-          type: type);
-    } else {
-      showSnackBar(context, 'Please enter all the fields');
+          type: postType?.type ?? PostEnum.type1.type);
     }
   }
 
@@ -90,7 +90,7 @@ class _AddPostPageState extends ConsumerState<AddPostPage> {
                 _isError = titleController.text.isEmpty;
               });
               if (!_isError) {
-                sharePost('linh tinh');
+                sharePost();
               }
             },
             style: ElevatedButton.styleFrom(
@@ -247,6 +247,42 @@ class _AddPostPageState extends ConsumerState<AddPostPage> {
                         ),
                         loading: () => const LoaderPage(),
                       ),
+                  const SizedBox(height: 35),
+                  Text(
+                    'Loại bài viết',
+                    style: Theme.of(context)
+                        .textTheme
+                        .displayLarge!
+                        .copyWith(fontSize: 18),
+                  ),
+                  const SizedBox(height: 5),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: currentTheme.cardTheme.surfaceTintColor,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: DropdownButton(
+                      style: Theme.of(context)
+                          .textTheme
+                          .displaySmall!
+                          .copyWith(fontSize: 18),
+                      value: postType ?? PostEnum.values[0],
+                      items: PostEnum.values
+                          .map(
+                            (e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(e.type),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (val) {
+                        setState(() {
+                          postType = val;
+                        });
+                      },
+                    ),
+                  ),
                   const SizedBox(height: 35),
                   Text(
                     'Ảnh',

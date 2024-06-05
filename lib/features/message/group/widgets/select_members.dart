@@ -18,7 +18,7 @@ class _SelectMembersState extends ConsumerState<SelectMembers> {
 
   void selectContact(int index, String uid) {
     if (selectedContactsIndex.contains(index)) {
-      selectedContactsIndex.removeAt(index);
+      selectedContactsIndex.remove(index);
     } else {
       selectedContactsIndex.add(index);
     }

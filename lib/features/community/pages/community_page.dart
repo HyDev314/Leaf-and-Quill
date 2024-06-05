@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:leaf_and_quill_app/config/constants/constants.dart';
 import 'package:leaf_and_quill_app/core/common/error.dart';
 import 'package:leaf_and_quill_app/core/common/loader.dart';
 import 'package:leaf_and_quill_app/core/common/widgets/skeleton.dart';
+import 'package:leaf_and_quill_app/core/enums/enums.dart';
 import 'package:leaf_and_quill_app/features/auth/controller/auth_controller.dart';
 import 'package:leaf_and_quill_app/features/community/controller/community_controller.dart';
 import 'package:leaf_and_quill_app/features/post/controller/post_controller.dart';
@@ -14,6 +16,7 @@ import 'package:routemaster/routemaster.dart';
 
 class CommunityPage extends ConsumerStatefulWidget {
   final String id;
+
   const CommunityPage({super.key, required this.id});
 
   @override
@@ -25,8 +28,30 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
       RefreshController(initialRefresh: false);
   bool _hasFetchedInitialPosts = false;
 
+  final ScrollController _scrollController = ScrollController();
+  double _scrollPosition = 0;
+
+  late PostEnum? postType;
+
+  _scrollListener() {
+    setState(() {
+      _scrollPosition = _scrollController.position.pixels;
+    });
+  }
+
+  @override
+  void initState() {
+    postType = null;
+    _scrollController.addListener(_scrollListener);
+    super.initState();
+  }
+
   void navigateToModTools(BuildContext context) {
     Routemaster.of(context).push('/mod-tools/${widget.id}');
+  }
+
+  void navigateToApprovePost(BuildContext context) {
+    Routemaster.of(context).push('/approve-posts/${widget.id}');
   }
 
   void joinCommunity(
@@ -37,14 +62,39 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
   }
 
   Future<void> _onRefresh(WidgetRef ref, String id) async {
-    await ref.read(postControllerProvider.notifier).refreshCommunityPosts(id);
+    _hasFetchedInitialPosts = true;
+    if (postType != null) {
+      await ref
+          .read(communityPostControllerProvider.notifier)
+          .refreshCommunityPosts(id: id, isApprove: true, type: postType!.type);
+    } else {
+      await ref
+          .read(communityPostControllerProvider.notifier)
+          .refreshCommunityPosts(id: id, isApprove: true);
+    }
     _refreshController.refreshCompleted();
   }
 
   Future<void> _onLoading(WidgetRef ref, String id) async {
     _hasFetchedInitialPosts = true;
-    await ref.read(postControllerProvider.notifier).fetchMoreCommunityPosts(id);
+    if (postType != null) {
+      await ref
+          .read(communityPostControllerProvider.notifier)
+          .fetchMoreCommunityPosts(
+              id: id, isApprove: true, type: postType!.type);
+    } else {
+      await ref
+          .read(communityPostControllerProvider.notifier)
+          .fetchMoreCommunityPosts(id: id, isApprove: true);
+    }
     _refreshController.loadComplete();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -56,14 +106,56 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
             if (!_hasFetchedInitialPosts) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 ref
-                    .read(postControllerProvider.notifier)
-                    .fetchInitialCommunityPosts(widget.id);
+                    .read(communityPostControllerProvider.notifier)
+                    .fetchInitialCommunityPosts(id: widget.id, isApprove: true);
               });
             }
-            final posts = ref.watch(postControllerProvider);
+            final posts = ref.watch(communityPostControllerProvider);
+
+            double appBarOpacity = _scrollPosition / 150;
+            if (appBarOpacity > 1) appBarOpacity = 1;
 
             return SkeletonPage(
-              title: const SizedBox(),
+              title: AnimatedOpacity(
+                opacity: _scrollPosition > 150 ? 1 : 0,
+                duration: const Duration(milliseconds: 300),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 40,
+                      width: 40,
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(community.avatar),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: SizedBox(
+                        width: 200,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(community.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displayLarge!
+                                    .copyWith(fontSize: 16)),
+                            const SizedBox(height: 2),
+                            Text('${community.members.length} members',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(fontSize: 14)),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
               backgroundImage: Image.network(
                 community.banner,
                 fit: BoxFit.cover,
@@ -73,20 +165,64 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
                   onPressed: () {
                     Routemaster.of(context).history.back();
                   }),
+              actionWs: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: AnimatedOpacity(
+                    opacity: _scrollPosition > 150 ? 1 : 0,
+                    duration: const Duration(milliseconds: 300),
+                    child: (community.admin == user.uid)
+                        ? OutlinedButton(
+                            onPressed: () => navigateToModTools(context),
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                            ),
+                            child: Text('Cài đặt',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displayLarge!
+                                    .copyWith(fontSize: 14)),
+                          )
+                        : OutlinedButton(
+                            onPressed: () =>
+                                joinCommunity(ref, community, context),
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                            ),
+                            child: Text(
+                                community.members.contains(user.uid)
+                                    ? 'Đã tham gia'
+                                    : 'Tham gia',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displayLarge!
+                                    .copyWith(fontSize: 14)),
+                          ),
+                  ),
+                ),
+              ],
               bodyW: SmartRefresher(
                 controller: _refreshController,
                 enablePullDown: true,
-                enablePullUp: ref.read(postControllerProvider.notifier).hasMore,
+                enablePullUp:
+                    ref.read(communityPostControllerProvider.notifier).hasMore,
                 onRefresh: () => _onRefresh(ref, widget.id),
                 onLoading: () => _onLoading(ref, widget.id),
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 15, horizontal: 5),
+                            vertical: 15, horizontal: 10),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -98,29 +234,30 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
                               ),
                             ),
                             const SizedBox(width: 10),
-                            SizedBox(
-                              width: 200,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(community.name,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .displayLarge!
-                                          .copyWith(fontSize: 20)),
-                                  const SizedBox(height: 5),
-                                  Text('${community.members.length} members',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .displaySmall!
-                                          .copyWith(fontSize: 16)),
-                                ],
+                            Expanded(
+                              child: SizedBox(
+                                width: 200,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(community.name,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .displayLarge!
+                                            .copyWith(fontSize: 20)),
+                                    const SizedBox(height: 5),
+                                    Text('${community.members.length} members',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .displaySmall!
+                                            .copyWith(fontSize: 16)),
+                                  ],
+                                ),
                               ),
                             ),
-                            const Spacer(),
-                            community.mods.contains(user.uid)
+                            (community.admin == user.uid)
                                 ? OutlinedButton(
                                     onPressed: () =>
                                         navigateToModTools(context),
@@ -131,7 +268,7 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 15),
                                     ),
-                                    child: Text('Mod Tools',
+                                    child: Text('Cài đặt',
                                         style: Theme.of(context)
                                             .textTheme
                                             .displayLarge!
@@ -145,12 +282,12 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
                                         borderRadius: BorderRadius.circular(20),
                                       ),
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 25),
+                                          horizontal: 15),
                                     ),
                                     child: Text(
                                         community.members.contains(user.uid)
-                                            ? 'Joined'
-                                            : 'Join',
+                                            ? 'Đã tham gia'
+                                            : 'Tham gia',
                                         style: Theme.of(context)
                                             .textTheme
                                             .displayLarge!
@@ -159,53 +296,107 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
                           ],
                         ),
                       ),
-                      (community.description != '')
-                          ? Padding(
-                              padding: const EdgeInsets.only(left: 10, top: 20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Mô tả về cộng đồng',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .displayLarge!
-                                          .copyWith(fontSize: 18)),
-                                  Padding(
-                                      padding: const EdgeInsets.only(top: 5),
-                                      child: Text(community.description,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .displaySmall!
-                                              .copyWith(fontSize: 16))),
-                                ],
-                              ),
-                            )
-                          : const SizedBox(),
-                      Divider(
+                    ),
+                    if (community.description.isNotEmpty)
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10, top: 5),
+                          child: Text(community.description,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(fontSize: 14)),
+                        ),
+                      ),
+                    if (community.mods.contains(user.uid))
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 10, top: 10, right: 200),
+                          child: SizedBox(
+                            height: 40,
+                            child: ElevatedButton(
+                              onPressed: () => navigateToApprovePost(context),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppPalette.greyColor),
+                              child: Text('Bài viết cần duyệt',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelSmall!
+                                      .copyWith(fontSize: 16)),
+                            ),
+                          ),
+                        ),
+                      ),
+                    SliverToBoxAdapter(
+                      child: Divider(
                         color: AppPalette.greyColor.withOpacity(0.5),
                         thickness: 1,
                         height: 30,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
+                    ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 55,
+                        child: ListView.builder(
+                          padding: const EdgeInsets.all(5),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: AppConstants.topics.length,
+                          itemBuilder: (context, index) {
+                            return Card(
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    postType = AppConstants.topics[index].type;
+                                  });
+                                  _onRefresh(ref, widget.id);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(AppConstants.topics[index].text,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .displaySmall!
+                                              .copyWith(fontSize: 14)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10, top: 10),
                         child: Text('Bài viết',
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge!
                                 .copyWith(fontSize: 18)),
                       ),
-                      const SizedBox(height: 10),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: posts.length,
-                        itemBuilder: (BuildContext context, int index) {
+                    ),
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: 10),
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
                           final post = posts[index];
-                          return PostCard(post: post);
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: PostCard(post: post),
+                          );
                         },
+                        childCount: posts.length,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             );

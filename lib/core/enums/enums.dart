@@ -3,6 +3,15 @@ enum ThemeMode {
   dark,
 }
 
+enum TPI {
+  comment(2),
+  upVote(2),
+  downVote(-2);
+
+  final int interest;
+  const TPI(this.interest);
+}
+
 enum MessageEnum {
   text('text'),
   image('image'),
@@ -28,4 +37,13 @@ extension ConvertMessage on String {
         return MessageEnum.text;
     }
   }
+}
+
+enum PostEnum {
+  type1('#chuyenthuongngay'),
+  type2('#hoidap'),
+  type3('#chiasekinhnghiem');
+
+  const PostEnum(this.type);
+  final String type;
 }

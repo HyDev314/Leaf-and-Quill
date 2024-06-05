@@ -22,6 +22,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     Routemaster.of(context).push('/r/$id');
   }
 
+  void navigateToProfile(BuildContext context, String id) {
+    Routemaster.of(context).push('/u/$id');
+  }
+
   void searchCommunityByName(WidgetRef ref, String communityName) {
     ref
         .read(communityControllerProvider.notifier)
@@ -202,7 +206,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                                           ),
                                     ),
                                     trailing: Text(
-                                      '${community.memberCount.toString()} members',
+                                      '${community.members.length} members',
                                       style: Theme.of(context)
                                           .textTheme
                                           .displaySmall!
@@ -269,7 +273,13 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                                             fontSize: 18,
                                           ),
                                     ),
-                                    onTap: () {},
+                                    trailing: Text('100 points',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge!
+                                            .copyWith(fontSize: 14)),
+                                    onTap: () =>
+                                        navigateToProfile(context, user.uid),
                                   ),
                                 ),
                               );

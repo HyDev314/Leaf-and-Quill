@@ -45,10 +45,10 @@ class SenderMessageCard extends ConsumerWidget {
           children: [
             ref.read(getUserDataProvider(senderId)).when(
                   data: (sender) => Padding(
-                    padding: const EdgeInsets.only(top: 5, left: 5),
+                    padding: const EdgeInsets.only(left: 5, top: 10),
                     child: SizedBox(
-                      height: 40,
-                      width: 40,
+                      height: 30,
+                      width: 30,
                       child: CircleAvatar(
                         backgroundImage: NetworkImage(sender.profilePic),
                         radius: 30,
@@ -69,7 +69,7 @@ class SenderMessageCard extends ConsumerWidget {
                 elevation: 1,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18)),
-                margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: Stack(
                   children: [
                     Padding(
@@ -101,25 +101,10 @@ class SenderMessageCard extends ConsumerWidget {
                                   ),
                                 ),
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    username,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displaySmall!
-                                        .copyWith(
-                                          fontSize: 16,
-                                        ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  DisplayTextImageGIF(
-                                    message: repliedText,
-                                    type: repliedMessageType,
-                                    isMe: false,
-                                  ),
-                                ],
+                              child: DisplayTextImageGIF(
+                                message: repliedText,
+                                type: repliedMessageType,
+                                isMe: false,
                               ),
                             ),
                             const SizedBox(height: 8),

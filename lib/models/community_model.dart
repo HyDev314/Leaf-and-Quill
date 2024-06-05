@@ -6,7 +6,7 @@ class CommunityModel {
   final String avatar;
   final String description;
   final List<String> members;
-  final int memberCount;
+  final String admin;
   final List<String> mods;
   final bool isDeleted;
 
@@ -18,7 +18,7 @@ class CommunityModel {
       required this.avatar,
       required this.description,
       required this.members,
-      required this.memberCount,
+      required this.admin,
       required this.mods,
       required this.isDeleted});
 
@@ -30,7 +30,7 @@ class CommunityModel {
     String? avatar,
     String? description,
     List<String>? members,
-    int? memberCount,
+    String? admin,
     List<String>? mods,
     bool? isDeleted,
   }) {
@@ -42,10 +42,15 @@ class CommunityModel {
       avatar: avatar ?? this.avatar,
       description: description ?? this.description,
       members: members ?? this.members,
-      memberCount: memberCount ?? this.memberCount,
+      admin: admin ?? this.admin,
       mods: mods ?? this.mods,
       isDeleted: isDeleted ?? this.isDeleted,
     );
+  }
+
+  @override
+  String toString() {
+    return 'CommunityModel(id: $id, name: $name, nameLowerCase: $nameLowerCase, banner: $banner, avatar: $avatar, description: $description, members: $members, admin: $admin, mods: $mods, isDeleted: $isDeleted)';
   }
 
   Map<String, dynamic> toMap() {
@@ -57,7 +62,7 @@ class CommunityModel {
       'avatar': avatar,
       'description': description,
       'members': members,
-      'memberCount': memberCount,
+      'admin': admin,
       'mods': mods,
       'isDeleted': isDeleted,
     };
@@ -72,7 +77,7 @@ class CommunityModel {
       avatar: map['avatar'] ?? '',
       description: map['description'] ?? '',
       members: List<String>.from(map['members']),
-      memberCount: map['memberCount']?.toInt() ?? 0,
+      admin: map['admin'] ?? '',
       mods: List<String>.from(map['mods']),
       isDeleted: map['isDeleted'] ?? false,
     );

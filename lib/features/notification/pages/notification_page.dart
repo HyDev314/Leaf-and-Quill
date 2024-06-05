@@ -12,7 +12,7 @@ class NotificationPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentUser = ref.watch(userProvider)!;
+    final uid = ref.read(userProvider)!.uid;
 
     return SkeletonPage(
       title: Text(
@@ -21,7 +21,7 @@ class NotificationPage extends ConsumerWidget {
               fontSize: 22,
             ),
       ),
-      bodyW: ref.watch(getUserNotificationsProvider(currentUser.uid)).when(
+      bodyW: ref.watch(getUserNotificationsProvider(uid)).when(
             data: (data) {
               if (data.isEmpty) {
                 return Center(

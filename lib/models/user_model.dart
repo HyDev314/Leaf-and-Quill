@@ -8,7 +8,6 @@ class UserModel {
   final String uid;
   final bool isAuthenticated;
   final List<String> friends;
-  final List<String> groupId;
 
   UserModel(
       {required this.name,
@@ -19,8 +18,7 @@ class UserModel {
       required this.banner,
       required this.uid,
       required this.isAuthenticated,
-      required this.friends,
-      required this.groupId});
+      required this.friends});
 
   UserModel copyWith({
     String? name,
@@ -32,7 +30,6 @@ class UserModel {
     String? uid,
     bool? isAuthenticated,
     List<String>? friends,
-    List<String>? groupId,
   }) {
     return UserModel(
       name: name ?? this.name,
@@ -44,7 +41,6 @@ class UserModel {
       uid: uid ?? this.uid,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       friends: friends ?? this.friends,
-      groupId: groupId ?? this.groupId,
     );
   }
 
@@ -59,7 +55,6 @@ class UserModel {
       'uid': uid,
       'isAuthenticated': isAuthenticated,
       'friends': friends,
-      'groupId': groupId,
     };
   }
 
@@ -74,7 +69,6 @@ class UserModel {
       uid: map['uid'] ?? '',
       isAuthenticated: map['isAuthenticated'] ?? false,
       friends: List<String>.from(map['friends']),
-      groupId: List<String>.from(map['groupId']),
     );
   }
 }

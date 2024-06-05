@@ -36,6 +36,7 @@ class _ChatFieldState extends ConsumerState<ChatField> {
   FocusNode focusNode = FocusNode();
   File? imageFile;
   File? videoFile;
+  bool _isError = false;
 
   @override
   void initState() {
@@ -55,15 +56,20 @@ class _ChatFieldState extends ConsumerState<ChatField> {
 
   void sendTextMessage() async {
     if (isShowSendButton) {
-      ref.read(chatControllerProvider).sendTextMessage(
-            context,
-            _messageController.text.trim(),
-            widget.receiverUserId,
-            widget.isGroupChat,
-          );
       setState(() {
-        _messageController.text = '';
+        _isError = _messageController.text.isEmpty;
       });
+      if (!_isError) {
+        ref.read(chatControllerProvider).sendTextMessage(
+              context,
+              _messageController.text.trim(),
+              widget.receiverUserId,
+              widget.isGroupChat,
+            );
+        setState(() {
+          _messageController.text = '';
+        });
+      }
     } else {
       var tempDir = await getTemporaryDirectory();
       var path = '${tempDir.path}/flutter_sound.aac';
@@ -135,11 +141,24 @@ class _ChatFieldState extends ConsumerState<ChatField> {
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         isShowMessageReply
             ? const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 child: MessageReplyPreview(),
+              )
+            : const SizedBox(),
+        _isError
+            ? Padding(
+                padding: const EdgeInsets.only(left: 30),
+                child: Text(
+                  'hãy nhập gì đó!',
+                  style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                        fontSize: 14,
+                        color: AppPalette.redColor,
+                      ),
+                ),
               )
             : const SizedBox(),
         Padding(
@@ -150,6 +169,7 @@ class _ChatFieldState extends ConsumerState<ChatField> {
                 child: TextFormField(
                   focusNode: focusNode,
                   controller: _messageController,
+                  onFieldSubmitted: (value) => sendTextMessage(),
                   onChanged: (val) {
                     if (val.isNotEmpty) {
                       setState(() {
@@ -191,9 +211,11 @@ class _ChatFieldState extends ConsumerState<ChatField> {
                     ),
                     hintText: 'Type a message!',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide:
-                          const BorderSide(width: 1, style: BorderStyle.solid),
+                      borderRadius: BorderRadius.circular(18),
+                      borderSide: _isError
+                          ? const BorderSide(
+                              color: AppPalette.redColor, width: 1)
+                          : const BorderSide(width: 1, style: BorderStyle.none),
                     ),
                     contentPadding: const EdgeInsets.all(10),
                   ),

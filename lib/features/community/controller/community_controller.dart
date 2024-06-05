@@ -68,7 +68,7 @@ class CommunityController extends StateNotifier<bool> {
         banner: AppConstants.bannerDefault,
         avatar: AppConstants.avatarDefault,
         members: [uid],
-        memberCount: 1,
+        admin: uid,
         mods: [uid],
         isDeleted: false);
 
