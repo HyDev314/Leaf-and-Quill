@@ -8,6 +8,7 @@ import 'package:leaf_and_quill_app/core/providers/storage_repository_provider.da
 import 'package:leaf_and_quill_app/core/utils/show_snackbar.dart';
 import 'package:leaf_and_quill_app/features/auth/controller/auth_controller.dart';
 import 'package:leaf_and_quill_app/features/community/repository/community_repository.dart';
+import 'package:leaf_and_quill_app/features/post/controller/post_controller.dart';
 import 'package:leaf_and_quill_app/models/community_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
@@ -165,6 +166,10 @@ class CommunityController extends StateNotifier<bool> {
     state = true;
 
     community = community.copyWith(isDeleted: true);
+
+    _ref
+        .read(postControllerProvider.notifier)
+        .deleteCommunityPost(communityId: community.id);
 
     final res = await _communityRepository.editCommunity(community);
     state = false;

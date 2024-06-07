@@ -158,6 +158,10 @@ class PostController extends StateNotifier<bool> {
     });
   }
 
+  void deleteCommunityPost({required String communityId}) async {
+    await _postRepository.updateIsDeletedForCommunity(communityId);
+  }
+
   void approvePost(
       {required BuildContext context, required PostModel post}) async {
     post = post.copyWith(isApprove: true);

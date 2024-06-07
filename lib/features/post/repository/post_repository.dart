@@ -143,6 +143,35 @@ class PostRepository {
         );
   }
 
+  Stream<List<PostModel>> getPostCommunity(String id) {
+    return _posts
+        .where('isDeleted', isEqualTo: false)
+        .where('communityId', isEqualTo: id)
+        .snapshots()
+        .map(
+          (event) => event.docs
+              .map(
+                (e) => PostModel.fromMap(
+                  e.data() as Map<String, dynamic>,
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  Future<void> updateIsDeletedForCommunity(String communityId) async {
+    try {
+      QuerySnapshot querySnapshot =
+          await _posts.where('communityId', isEqualTo: communityId).get();
+
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        await doc.reference.update({'isDeleted': true});
+      }
+    } catch (e) {
+      null;
+    }
+  }
+
   Future<List<PostModel>> fetchPosts({
     required List<CommunityModel> communities,
     required int limit,

@@ -206,47 +206,76 @@ class _AddPostPageState extends ConsumerState<AddPostPage> {
                         .copyWith(fontSize: 18),
                   ),
                   const SizedBox(height: 5),
-                  ref.watch(userCommunitiesProvider(currentUser.uid)).when(
-                        data: (data) {
-                          communities = data;
+                  (widget.communityId != null)
+                      ? ref
+                          .watch(getCommunityByIdProvider(widget.communityId!))
+                          .when(
+                            data: (community) {
+                              setState(() {
+                                selectedCommunity = community;
+                              });
 
-                          if (data.isEmpty) {
-                            return const SizedBox();
-                          }
-
-                          return Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                            decoration: BoxDecoration(
-                                color: currentTheme.cardTheme.surfaceTintColor,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: DropdownButton(
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displaySmall!
-                                  .copyWith(fontSize: 18),
-                              value: selectedCommunity ?? data[0],
-                              items: data
-                                  .map(
-                                    (e) => DropdownMenuItem(
-                                      value: e,
-                                      child: Text(e.name),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (val) {
-                                setState(() {
-                                  selectedCommunity = val;
-                                });
-                              },
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                child: Text(
+                                  community.name,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displaySmall!
+                                      .copyWith(fontSize: 18),
+                                ),
+                              );
+                            },
+                            error: (error, stackTrace) => ErrorPage(
+                              errorText: error.toString(),
                             ),
-                          );
-                        },
-                        error: (error, stackTrace) => ErrorPage(
-                          errorText: error.toString(),
-                        ),
-                        loading: () => const LoaderPage(),
-                      ),
+                            loading: () => const LoaderPage(),
+                          )
+                      : ref
+                          .watch(userCommunitiesProvider(currentUser.uid))
+                          .when(
+                            data: (data) {
+                              communities = data;
+
+                              if (data.isEmpty) {
+                                return const SizedBox();
+                              }
+
+                              return Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                    color:
+                                        currentTheme.cardTheme.surfaceTintColor,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: DropdownButton(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displaySmall!
+                                      .copyWith(fontSize: 18),
+                                  value: selectedCommunity ?? data[0],
+                                  items: data
+                                      .map(
+                                        (e) => DropdownMenuItem(
+                                          value: e,
+                                          child: Text(e.name),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (val) {
+                                    setState(() {
+                                      selectedCommunity = val;
+                                    });
+                                  },
+                                ),
+                              );
+                            },
+                            error: (error, stackTrace) => ErrorPage(
+                              errorText: error.toString(),
+                            ),
+                            loading: () => const LoaderPage(),
+                          ),
                   const SizedBox(height: 35),
                   Text(
                     'Loại bài viết',

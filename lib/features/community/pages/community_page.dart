@@ -75,6 +75,10 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
     _refreshController.refreshCompleted();
   }
 
+  void navigateToAddPost(BuildContext context) {
+    Routemaster.of(context).push('/add-post-cId/${widget.id}');
+  }
+
   Future<void> _onLoading(WidgetRef ref, String id) async {
     _hasFetchedInitialPosts = true;
     if (postType != null) {
@@ -398,6 +402,10 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
                     ),
                   ],
                 ),
+              ),
+              floatingButtonW: FloatingActionButton(
+                onPressed: () => navigateToAddPost(context),
+                child: const Icon(Icons.add),
               ),
             );
           },

@@ -62,6 +62,10 @@ final loggedInRoute = RouteMap(
           uid: routeData.pathParameters['uid']!,
         )),
     '/add-post': (_) => const MaterialPage(child: AddPostPage()),
+    '/add-post-cId/:cId': (routeData) => MaterialPage(
+            child: AddPostPage(
+          communityId: routeData.pathParameters['cId']!,
+        )),
     '/m': (_) => const MaterialPage(child: MessagePage()),
     '/post/:postId/details': (routeData) => MaterialPage(
             child: PostDetailsPage(

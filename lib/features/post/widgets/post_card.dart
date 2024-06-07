@@ -268,7 +268,6 @@ class _PostCardState extends ConsumerState<PostCard> {
                                 .displaySmall!
                                 .copyWith(fontSize: 16),
                           ),
-                          const SizedBox(height: 5),
                           if (widget.post.description.length > 50)
                             GestureDetector(
                               onTap: () {
@@ -276,14 +275,18 @@ class _PostCardState extends ConsumerState<PostCard> {
                                   flag = !flag;
                                 });
                               },
-                              child: Text(
-                                flag ? 'Thu gọn' : 'Xem thêm',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displaySmall!
-                                    .copyWith(
-                                        fontSize: 15,
-                                        color: AppPalette.mainColor),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(bottom: 10, top: 5),
+                                child: Text(
+                                  flag ? 'Thu gọn' : 'Xem thêm',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displaySmall!
+                                      .copyWith(
+                                          fontSize: 15,
+                                          color: AppPalette.mainColor),
+                                ),
                               ),
                             ),
                         ],
